@@ -1,0 +1,1288 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS с нуля — Лекция 1</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+        line-height: 1.6;
+      }
+      header {
+        background: linear-gradient(135deg, #1e40af, #7c3aed);
+        padding: 2rem;
+        text-align: center;
+      }
+      header h1 {
+        font-size: 2rem;
+        margin-bottom: 0.4rem;
+      }
+      header p {
+        opacity: 0.85;
+        font-size: 1.05rem;
+      }
+      header code {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 2px 8px;
+        border-radius: 4px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      /* ── Theory ── */
+      .theory {
+        background: #1e293b;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+      }
+      .theory h2 {
+        color: #60a5fa;
+        margin-bottom: 1rem;
+      }
+      .theory table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0.75rem 0;
+      }
+      .theory th {
+        background: #334155;
+        padding: 0.5rem 0.75rem;
+        text-align: left;
+      }
+      .theory td {
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid #334155;
+      }
+      .theory code {
+        background: #0f172a;
+        padding: 0.15rem 0.4rem;
+        border-radius: 4px;
+        color: #f472b6;
+      }
+      .theory p {
+        color: #94a3b8;
+        font-size: 0.9rem;
+        margin-top: 0.75rem;
+      }
+
+      /* ── Block titles ── */
+      .block-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin: 2rem 0 1rem;
+        padding: 0.5rem 1rem;
+        border-left: 4px solid;
+        border-radius: 0 8px 8px 0;
+      }
+      .b1 {
+        border-color: #22c55e;
+        background: rgba(34, 197, 94, 0.08);
+        color: #86efac;
+      }
+      .b2 {
+        border-color: #eab308;
+        background: rgba(234, 179, 8, 0.08);
+        color: #fde68a;
+      }
+      .b3 {
+        border-color: #f97316;
+        background: rgba(249, 115, 22, 0.08);
+        color: #fdba74;
+      }
+      .b4 {
+        border-color: #ef4444;
+        background: rgba(239, 68, 68, 0.08);
+        color: #fca5a5;
+      }
+
+      /* ── Grid ── */
+      .tasks-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+        gap: 1.25rem;
+        margin-bottom: 1.5rem;
+      }
+
+      /* ── Card ── */
+      .card {
+        background: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition:
+          transform 0.2s,
+          box-shadow 0.2s;
+      }
+      .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+      }
+      .card-head {
+        padding: 0.9rem 1.1rem 0.4rem;
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+      }
+      .num {
+        background: #3b82f6;
+        color: #fff;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.78rem;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+      .card-head strong {
+        font-size: 0.95rem;
+      }
+      .card-desc {
+        padding: 0 1.1rem 0.7rem;
+        font-size: 0.88rem;
+        color: #94a3b8;
+        flex: 1;
+      }
+      .card-desc code {
+        background: #0f172a;
+        padding: 1px 5px;
+        border-radius: 3px;
+        color: #f472b6;
+        font-size: 0.85em;
+      }
+      pre {
+        background: #0d1525;
+        border-top: 1px solid #334155;
+        padding: 0.85rem 1.1rem;
+        font-size: 0.8rem;
+        font-family: "Fira Code", Consolas, monospace;
+        color: #7dd3fc;
+        overflow-x: auto;
+        white-space: pre;
+      }
+      .card-foot {
+        padding: 0.75rem 1.1rem;
+        border-top: 1px solid #334155;
+      }
+      .btn {
+        width: 100%;
+        background: linear-gradient(135deg, #2563eb, #7c3aed);
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 0.88rem;
+        font-weight: 600;
+        transition: opacity 0.2s;
+      }
+      .btn:hover {
+        opacity: 0.82;
+      }
+
+      /* ── Footer ── */
+      footer {
+        text-align: center;
+        padding: 2rem;
+        color: #64748b;
+        border-top: 1px solid #1e293b;
+        margin-top: 1rem;
+      }
+      footer a {
+        color: #60a5fa;
+        text-decoration: none;
+      }
+      footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>📘 JavaScript с нуля</h1>
+      <p>
+        Лекция 1 — <code>alert</code> · <code>prompt</code> ·
+        <code>confirm</code> &nbsp;|&nbsp; 40 интерактивных задач
+      </p>
+    </header>
+
+    <div class="container">
+      <!-- ══ THEORY ══ -->
+      <div class="theory">
+        <h2>🧠 Теория</h2>
+        <table>
+          <tr>
+            <th>Функция</th>
+            <th>Описание</th>
+            <th>Возвращает</th>
+          </tr>
+          <tr>
+            <td><code>alert(msg)</code></td>
+            <td>Показывает сообщение</td>
+            <td><code>undefined</code></td>
+          </tr>
+          <tr>
+            <td><code>prompt(msg)</code></td>
+            <td>Запрашивает ввод текста</td>
+            <td>строку или <code>null</code></td>
+          </tr>
+          <tr>
+            <td><code>confirm(msg)</code></td>
+            <td>Вопрос Да / Нет</td>
+            <td><code>true</code> или <code>false</code></td>
+          </tr>
+        </table>
+        <p>
+          ⚠️ <code>prompt()</code> всегда возвращает <strong>строку</strong>.
+          Для арифметики оборачивай в <code>Number()</code>.
+        </p>
+      </div>
+
+      <!-- ══ BLOCK 1 ══ -->
+      <div class="block-title b1">
+        🟢 Блок 1 — alert: вывод сообщений (1–10)
+      </div>
+      <div class="tasks-grid">
+        <div class="card">
+          <div class="card-head">
+            <div class="num">1</div>
+            <strong>Привет, мир!</strong>
+          </div>
+          <div class="card-desc">
+            Выведи в <code>alert</code> фразу: <em>Привет, мир!</em>
+          </div>
+          <pre>alert("Привет, мир!");</pre>
+          <div class="card-foot">
+            <button class="btn" onclick="t1()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">2</div>
+            <strong>Вывести имя</strong>
+          </div>
+          <div class="card-desc">Выведи своё имя через <code>alert</code>.</div>
+          <pre>alert("Иван");</pre>
+          <div class="card-foot">
+            <button class="btn" onclick="t2()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">3</div>
+            <strong>Переменная и alert</strong>
+          </div>
+          <div class="card-desc">
+            Объяви <code>city = "Москва"</code> и выведи через
+            <code>alert</code>.
+          </div>
+          <pre>
+let city = "Москва";
+alert(city);</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t3()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">4</div>
+            <strong>Полное имя</strong>
+          </div>
+          <div class="card-desc">
+            Объяви <code>firstName</code> и <code>lastName</code>. Выведи полное
+            имя.
+          </div>
+          <pre>
+let firstName = "Анна";
+let lastName  = "Иванова";
+alert(firstName + " " + lastName);</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t4()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">5</div>
+            <strong>Год в сообщении</strong>
+          </div>
+          <div class="card-desc">
+            Объяви <code>year = 2026</code> и выведи: <em>Сейчас 2026 год</em>.
+          </div>
+          <pre>
+let year = 2026;
+alert("Сейчас " + year + " год");</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t5()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">6</div>
+            <strong>Шаблонная строка</strong>
+          </div>
+          <div class="card-desc">
+            Объяви <code>country = "Россия"</code>. Используй шаблонную строку.
+          </div>
+          <pre>
+let country = "Россия";
+alert(`Я живу в ${country}`);</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t6()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">7</div>
+            <strong>Сложение в alert</strong>
+          </div>
+          <div class="card-desc">
+            Выведи результат сложения <code>5 + 3</code>.
+          </div>
+          <pre>alert(5 + 3);</pre>
+          <div class="card-foot">
+            <button class="btn" onclick="t7()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">8</div>
+            <strong>Арифметика</strong>
+          </div>
+          <div class="card-desc">
+            Объяви <code>a = 10</code>, <code>b = 4</code>. Выведи сумму,
+            разность, произведение, частное.
+          </div>
+          <pre>
+let a = 10, b = 4;
+alert(a + b); // 14
+alert(a - b); // 6
+alert(a * b); // 40
+alert(a / b); // 2.5</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t8()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">9</div>
+            <strong>Остаток от деления</strong>
+          </div>
+          <div class="card-desc">
+            Выведи остаток от деления <code>17</code> на <code>5</code>.
+          </div>
+          <pre>alert(17 % 5); // 2</pre>
+          <div class="card-foot">
+            <button class="btn" onclick="t9()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">10</div>
+            <strong>Итоговая стоимость</strong>
+          </div>
+          <div class="card-desc">
+            Объяви <code>price = 199</code>, <code>count = 3</code>. Выведи:
+            <em>Итого: 597 руб.</em>
+          </div>
+          <pre>
+let price = 199, count = 3;
+alert("Итого: " + price * count + " руб.");</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t10()">▶ Запустить</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ BLOCK 2 ══ -->
+      <div class="block-title b2">🟡 Блок 2 — prompt: ввод данных (11–20)</div>
+      <div class="tasks-grid">
+        <div class="card">
+          <div class="card-head">
+            <div class="num">11</div>
+            <strong>Приветствие</strong>
+          </div>
+          <div class="card-desc">
+            Спроси имя пользователя и поздоровайся с ним.
+          </div>
+          <pre>
+let name = prompt("Как тебя зовут?");
+alert("Привет, " + name + "!");</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t11()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">12</div>
+            <strong>Любимый цвет</strong>
+          </div>
+          <div class="card-desc">
+            Спроси любимый цвет и выведи его в сообщении.
+          </div>
+          <pre>
+let color = prompt("Любимый цвет?");
+alert("Твой любимый цвет — " + color);</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t12()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">13</div>
+            <strong>Сумма двух чисел</strong>
+          </div>
+          <div class="card-desc">
+            Спроси два числа и выведи их сумму. ⚠️ Используй
+            <code>Number()</code>!
+          </div>
+          <pre>
+let a = Number(prompt("Первое число:"));
+let b = Number(prompt("Второе число:"));
+alert("Сумма: " + (a + b));</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t13()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">14</div>
+            <strong>Имя и фамилия</strong>
+          </div>
+          <div class="card-desc">
+            Спроси имя и фамилию отдельными <code>prompt</code>. Выведи полное
+            имя.
+          </div>
+          <pre>
+let first = prompt("Имя:");
+let last  = prompt("Фамилия:");
+alert("Полное имя: " + first + " " + last);</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t14()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">15</div>
+            <strong>Возраст через 10 лет</strong>
+          </div>
+          <div class="card-desc">
+            Спроси возраст и выведи, сколько будет через 10 лет.
+          </div>
+          <pre>
+let age = Number(prompt("Сколько тебе лет?"));
+alert("Через 10 лет: " + (age + 10) + " лет");</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t15()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">16</div>
+            <strong>°C → °F</strong>
+          </div>
+          <div class="card-desc">
+            Спроси температуру в Цельсиях и переведи в Фаренгейты. F = C × 1.8 +
+            32
+          </div>
+          <pre>
+let c = Number(prompt("Температура °C:"));
+let f = c * 1.8 + 32;
+alert(c + "°C = " + f + "°F");</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t16()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">17</div>
+            <strong>Площадь и периметр</strong>
+          </div>
+          <div class="card-desc">
+            Спроси ширину и высоту прямоугольника. Выведи площадь и периметр.
+          </div>
+          <pre>
+let w = Number(prompt("Ширина:"));
+let h = Number(prompt("Высота:"));
+alert("Площадь: " + w * h);
+alert("Периметр: " + 2 * (w + h));</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t17()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">18</div>
+            <strong>Минуты → Ч:М</strong>
+          </div>
+          <div class="card-desc">
+            Спроси минуты и переведи в формат <em>Х ч. Х мин.</em>
+          </div>
+          <pre>
+let mins = Number(prompt("Минуты:"));
+let h = Math.floor(mins / 60);
+let m = mins % 60;
+alert(mins + " мин = " + h + " ч. " + m + " мин.");</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t18()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">19</div>
+            <strong>Проверка на null</strong>
+          </div>
+          <div class="card-desc">
+            Спроси имя. Если нажали «Отмена» — выведи: <em>Имя не введено</em>.
+          </div>
+          <pre>
+let name = prompt("Твоё имя:");
+if (name === null) {
+  alert("Имя не введено");
+} else {
+  alert("Привет, " + name + "!");
+}</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t19()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">20</div>
+            <strong>Квадрат числа</strong>
+          </div>
+          <div class="card-desc">Спроси число и выведи его квадрат.</div>
+          <pre>
+let num = Number(prompt("Введи число:"));
+alert("Квадрат: " + num * num);</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t20()">▶ Запустить</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ BLOCK 3 ══ -->
+      <div class="block-title b3">
+        🟠 Блок 3 — confirm: подтверждение (21–28)
+      </div>
+      <div class="tasks-grid">
+        <div class="card">
+          <div class="card-head">
+            <div class="num">21</div>
+            <strong>Ты программист?</strong>
+          </div>
+          <div class="card-desc">
+            Спроси через <code>confirm</code>. Разный ответ в зависимости от
+            выбора.
+          </div>
+          <pre>
+let res = confirm("Ты программист?");
+if (res) {
+  alert("Добро пожаловать в мир кода!");
+} else {
+  alert("Всё ещё впереди!");
+}</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t21()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">22</div>
+            <strong>Выход из системы</strong>
+          </div>
+          <div class="card-desc">
+            Спроси подтверждение выхода. Выведи, что произошло.
+          </div>
+          <pre>
+let exit = confirm("Ты уверен, что хочешь выйти?");
+if (exit) {
+  alert("До свидания!");
+} else {
+  alert("Остаёмся!");
+}</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t22()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">23</div>
+            <strong>Проверка возраста</strong>
+          </div>
+          <div class="card-desc">
+            Через <code>confirm</code> спроси: больше 18? Выведи статус доступа.
+          </div>
+          <pre>
+let adult = confirm("Тебе больше 18 лет?");
+if (adult) {
+  alert("Доступ разрешён");
+} else {
+  alert("Доступ запрещён");
+}</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t23()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">24</div>
+            <strong>Подтверждение имени</strong>
+          </div>
+          <div class="card-desc">
+            Спроси имя через <code>prompt</code>, затем подтверди его через
+            <code>confirm</code>.
+          </div>
+          <pre>
+let name = prompt("Как тебя зовут?");
+let sure = confirm("Ты точно " + name + "?");
+if (sure) {
+  alert("Приятно познакомиться, " + name + "!");
+} else {
+  alert("Хм, странно...");
+}</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t24()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">25</div>
+            <strong>Секрет</strong>
+          </div>
+          <div class="card-desc">
+            Спроси: хочешь узнать секрет? Если да — раскрой его.
+          </div>
+          <pre>
+let want = confirm("Хочешь узнать секрет?");
+if (want) {
+  alert("JavaScript — это весело!");
+} else {
+  alert("Ладно, как хочешь.");
+}</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t25()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">26</div>
+            <strong>Показать квадрат?</strong>
+          </div>
+          <div class="card-desc">
+            Спроси число, затем через <code>confirm</code> — показывать ли
+            квадрат.
+          </div>
+          <pre>
+let num = Number(prompt("Число:"));
+let show = confirm("Показать квадрат " + num + "?");
+if (show) {
+  alert(num + "² = " + num * num);
+}</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t26()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">27</div>
+            <strong>Сменить имя</strong>
+          </div>
+          <div class="card-desc">
+            Спроси имя, предложи его сменить через <code>confirm</code>.
+          </div>
+          <pre>
+let name = prompt("Как тебя зовут?");
+let ch = confirm("Хочешь другое имя?");
+if (ch) {
+  name = prompt("Новое имя:");
+}
+alert("Привет, " + name + "!");</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t27()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">28</div>
+            <strong>Счётчик энтузиазма</strong>
+          </div>
+          <div class="card-desc">
+            3 вопроса через <code>confirm</code>. Подсчитай сколько раз ответил
+            «Да».
+          </div>
+          <pre>
+let score = 0;
+if (confirm("Любишь JavaScript?"))         score++;
+if (confirm("Любишь программировать?"))    score++;
+if (confirm("Учишься каждый день?"))       score++;
+alert("Энтузиазм: " + score + " из 3");</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t28()">▶ Запустить</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══ BLOCK 4 ══ -->
+      <div class="block-title b4">
+        🔴 Блок 4 — Комбинированные задачи (29–40)
+      </div>
+      <div class="tasks-grid">
+        <div class="card">
+          <div class="card-head">
+            <div class="num">29</div>
+            <strong>Мини-анкета</strong>
+          </div>
+          <div class="card-desc">
+            Спроси имя, возраст и город. Выведи анкету одним <code>alert</code>.
+          </div>
+          <pre>
+let name = prompt("Имя:");
+let age  = prompt("Возраст:");
+let city = prompt("Город:");
+alert("Имя: "    + name +
+      "\nВозраст: " + age +
+      "\nГород: "   + city);</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t29()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">30</div>
+            <strong>Скидка 10%</strong>
+          </div>
+          <div class="card-desc">
+            Спроси цену и количество. Выведи итог и сумму со скидкой 10%.
+          </div>
+          <pre>
+let price = Number(prompt("Цена:"));
+let count = Number(prompt("Количество:"));
+let total = price * count;
+alert("Итого: " + total + " руб." +
+      "\nСо скидкой: " + total * 0.9 + " руб.");</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t30()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">31</div>
+            <strong>Среднее трёх чисел</strong>
+          </div>
+          <div class="card-desc">
+            Спроси три числа и выведи их среднее арифметическое.
+          </div>
+          <pre>
+let a = Number(prompt("Число 1:"));
+let b = Number(prompt("Число 2:"));
+let c = Number(prompt("Число 3:"));
+alert("Среднее: " + (a + b + c) / 3);</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t31()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">32</div>
+            <strong>Расстояние</strong>
+          </div>
+          <div class="card-desc">
+            Спроси скорость (км/ч) и время (ч). Выведи пройденное расстояние.
+          </div>
+          <pre>
+let speed = Number(prompt("Скорость (км/ч):"));
+let time  = Number(prompt("Время (ч):"));
+alert("Расстояние: " + speed * time + " км");</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t32()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">33</div>
+            <strong>Площадь круга</strong>
+          </div>
+          <div class="card-desc">
+            Спроси радиус. Выведи площадь и длину окружности.
+          </div>
+          <pre>
+let r  = Number(prompt("Радиус:"));
+let pi = 3.14159;
+alert("Площадь: " + (pi * r * r).toFixed(2));
+alert("Длина:   " + (2 * pi * r).toFixed(2));</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t33()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">34</div>
+            <strong>Секунды → Ч:М:С</strong>
+          </div>
+          <div class="card-desc">
+            Спроси секунды и переведи в формат <em>Ч:М:С</em>.
+          </div>
+          <pre>
+let total = Number(prompt("Секунды:"));
+let h = Math.floor(total / 3600);
+let m = Math.floor((total % 3600) / 60);
+let s = total % 60;
+alert(h + ":" + m + ":" + s);</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t34()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">35</div>
+            <strong>Новые сообщения</strong>
+          </div>
+          <div class="card-desc">
+            Спроси имя и количество сообщений. Разный вывод для 0 и &gt; 0.
+          </div>
+          <pre>
+let name = prompt("Имя:");
+let msgs = Number(prompt("Сообщений:"));
+if (msgs > 0) {
+  alert(name + ", у тебя " + msgs + " сообщений!");
+} else {
+  alert("Новых сообщений нет.");
+}</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t35()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">36</div>
+            <strong>Пароль</strong>
+          </div>
+          <div class="card-desc">
+            Спроси пароль. Если <code>"1234"</code> — вход разрешён, иначе —
+            ошибка.
+          </div>
+          <pre>
+let pass = prompt("Введи пароль:");
+if (pass === "1234") {
+  alert("Добро пожаловать!");
+} else {
+  alert("Неверный пароль.");
+}</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t36()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">37</div>
+            <strong>Чётное / нечётное</strong>
+          </div>
+          <div class="card-desc">
+            Спроси число и определи: чётное оно или нечётное.
+          </div>
+          <pre>
+let num = Number(prompt("Число:"));
+if (num % 2 === 0) {
+  alert(num + " — чётное");
+} else {
+  alert(num + " — нечётное");
+}</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t37()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">38</div>
+            <strong>Возрастная группа</strong>
+          </div>
+          <div class="card-desc">
+            Спроси возраст: до 18 — ребёнок, 18–60 — взрослый, старше 60 —
+            пожилой.
+          </div>
+          <pre>
+let age = Number(prompt("Возраст:"));
+if (age < 18) {
+  alert("Ребёнок / подросток");
+} else if (age <= 60) {
+  alert("Взрослый");
+} else {
+  alert("Пожилой");
+}</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t38()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <div class="num">39</div>
+            <strong>Время года</strong>
+          </div>
+          <div class="card-desc">
+            Спроси номер месяца (1–12) и определи время года.
+          </div>
+          <pre>
+let m = Number(prompt("Месяц (1-12):"));
+if      (m >= 3 && m <= 5)  alert("Весна");
+else if (m >= 6 && m <= 8)  alert("Лето");
+else if (m >= 9 && m <= 11) alert("Осень");
+else                         alert("Зима");</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t39()">▶ Запустить</button>
+          </div>
+        </div>
+
+        <div class="card" style="border-color: #7c3aed">
+          <div class="card-head">
+            <div class="num" style="background: #7c3aed">40</div>
+            <strong>🏆 Финальная анкета</strong>
+          </div>
+          <div class="card-desc">
+            Собери всё: имя, возраст, статус студента, язык. Выведи красивую
+            анкету.
+          </div>
+          <pre>
+let name    = prompt("Имя:");
+let age     = Number(prompt("Возраст:"));
+let student = confirm("Ты студент?");
+let lang    = prompt("Любимый язык программирования:");
+let status  = student ? "Студент" : "Не студент";
+alert(
+  "=== АНКЕТА ===\n" +
+  "Имя: "     + name    + "\n" +
+  "Возраст: " + age     + "\n" +
+  "Статус: "  + status  + "\n" +
+  "Язык: "    + lang
+);</pre
+          >
+          <div class="card-foot">
+            <button class="btn" onclick="t40()">▶ Запустить</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>
+        📘 JavaScript с нуля — Лекция 1 &nbsp;|&nbsp; 40 задач &nbsp;|&nbsp;
+        alert · prompt · confirm
+      </p>
+    </footer>
+
+    <script>
+      // ── Block 1 ──
+      function t1() {
+        alert("Привет, мир!");
+      }
+      function t2() {
+        alert("Иван");
+      }
+      function t3() {
+        let city = "Москва";
+        alert(city);
+      }
+      function t4() {
+        let firstName = "Анна";
+        let lastName = "Иванова";
+        alert(firstName + " " + lastName);
+      }
+      function t5() {
+        let year = 2026;
+        alert("Сейчас " + year + " год");
+      }
+      function t6() {
+        let country = "Россия";
+        alert(`Я живу в ${country}`);
+      }
+      function t7() {
+        alert(5 + 3);
+      }
+      function t8() {
+        let a = 10,
+          b = 4;
+        alert(a + b);
+        alert(a - b);
+        alert(a * b);
+        alert(a / b);
+      }
+      function t9() {
+        alert(17 % 5);
+      }
+      function t10() {
+        let price = 199,
+          count = 3;
+        alert("Итого: " + price * count + " руб.");
+      }
+
+      // ── Block 2 ──
+      function t11() {
+        let name = prompt("Как тебя зовут?");
+        alert("Привет, " + name + "!");
+      }
+      function t12() {
+        let color = prompt("Любимый цвет?");
+        alert("Твой любимый цвет — " + color);
+      }
+      function t13() {
+        let a = Number(prompt("Первое число:"));
+        let b = Number(prompt("Второе число:"));
+        alert("Сумма: " + (a + b));
+      }
+      function t14() {
+        let first = prompt("Имя:");
+        let last = prompt("Фамилия:");
+        alert("Полное имя: " + first + " " + last);
+      }
+      function t15() {
+        let age = Number(prompt("Сколько тебе лет?"));
+        alert("Через 10 лет: " + (age + 10) + " лет");
+      }
+      function t16() {
+        let c = Number(prompt("Температура °C:"));
+        alert(c + "°C = " + (c * 1.8 + 32) + "°F");
+      }
+      function t17() {
+        let w = Number(prompt("Ширина:"));
+        let h = Number(prompt("Высота:"));
+        alert("Площадь: " + w * h);
+        alert("Периметр: " + 2 * (w + h));
+      }
+      function t18() {
+        let mins = Number(prompt("Минуты:"));
+        let h = Math.floor(mins / 60);
+        let m = mins % 60;
+        alert(mins + " мин = " + h + " ч. " + m + " мин.");
+      }
+      function t19() {
+        let name = prompt("Твоё имя:");
+        if (name === null) {
+          alert("Имя не введено");
+        } else {
+          alert("Привет, " + name + "!");
+        }
+      }
+      function t20() {
+        let num = Number(prompt("Введи число:"));
+        alert("Квадрат: " + num * num);
+      }
+
+      // ── Block 3 ──
+      function t21() {
+        let r = confirm("Ты программист?");
+        alert(r ? "Добро пожаловать в мир кода!" : "Всё ещё впереди!");
+      }
+      function t22() {
+        let e = confirm("Ты уверен, что хочешь выйти?");
+        alert(e ? "До свидания!" : "Остаёмся!");
+      }
+      function t23() {
+        let a = confirm("Тебе больше 18 лет?");
+        alert(a ? "Доступ разрешён" : "Доступ запрещён");
+      }
+      function t24() {
+        let name = prompt("Как тебя зовут?");
+        let s = confirm("Ты точно " + name + "?");
+        alert(s ? "Приятно познакомиться, " + name + "!" : "Хм, странно...");
+      }
+      function t25() {
+        let w = confirm("Хочешь узнать секрет?");
+        alert(w ? "JavaScript — это весело!" : "Ладно, как хочешь.");
+      }
+      function t26() {
+        let num = Number(prompt("Число:"));
+        let show = confirm("Показать квадрат " + num + "?");
+        if (show) alert(num + "² = " + num * num);
+      }
+      function t27() {
+        let name = prompt("Как тебя зовут?");
+        if (confirm("Хочешь другое имя?")) name = prompt("Новое имя:");
+        alert("Привет, " + name + "!");
+      }
+      function t28() {
+        let s = 0;
+        if (confirm("Любишь JavaScript?")) s++;
+        if (confirm("Любишь программировать?")) s++;
+        if (confirm("Учишься каждый день?")) s++;
+        alert("Энтузиазм: " + s + " из 3");
+      }
+
+      // ── Block 4 ──
+      function t29() {
+        let n = prompt("Имя:");
+        let a = prompt("Возраст:");
+        let c = prompt("Город:");
+        alert("Имя: " + n + "\nВозраст: " + a + "\nГород: " + c);
+      }
+      function t30() {
+        let p = Number(prompt("Цена:"));
+        let q = Number(prompt("Количество:"));
+        let t = p * q;
+        alert(
+          "Итого: " +
+            t +
+            " руб.\nСо скидкой 10%: " +
+            (t * 0.9).toFixed(2) +
+            " руб.",
+        );
+      }
+      function t31() {
+        let a = Number(prompt("Число 1:"));
+        let b = Number(prompt("Число 2:"));
+        let c = Number(prompt("Число 3:"));
+        alert("Среднее: " + (a + b + c) / 3);
+      }
+      function t32() {
+        let s = Number(prompt("Скорость (км/ч):"));
+        let t = Number(prompt("Время (ч):"));
+        alert("Расстояние: " + s * t + " км");
+      }
+      function t33() {
+        let r = Number(prompt("Радиус:"));
+        let pi = 3.14159;
+        alert("Площадь: " + (pi * r * r).toFixed(2));
+        alert("Длина окружности: " + (2 * pi * r).toFixed(2));
+      }
+      function t34() {
+        let total = Number(prompt("Секунды:"));
+        let h = Math.floor(total / 3600);
+        let m = Math.floor((total % 3600) / 60);
+        let s = total % 60;
+        alert(h + ":" + m + ":" + s);
+      }
+      function t35() {
+        let name = prompt("Имя:");
+        let msgs = Number(prompt("Сообщений:"));
+        alert(
+          msgs > 0
+            ? name + ", у тебя " + msgs + " сообщений!"
+            : "Новых сообщений нет.",
+        );
+      }
+      function t36() {
+        let pass = prompt("Введи пароль:");
+        alert(pass === "1234" ? "Добро пожаловать!" : "Неверный пароль.");
+      }
+      function t37() {
+        let num = Number(prompt("Число:"));
+        alert(num % 2 === 0 ? num + " — чётное" : num + " — нечётное");
+      }
+      function t38() {
+        let age = Number(prompt("Возраст:"));
+        if (age < 18) alert("Ребёнок / подросток");
+        else if (age <= 60) alert("Взрослый");
+        else alert("Пожилой");
+      }
+      function t39() {
+        let m = Number(prompt("Месяц (1-12):"));
+        if (m >= 3 && m <= 5) alert("Весна");
+        else if (m >= 6 && m <= 8) alert("Лето");
+        else if (m >= 9 && m <= 11) alert("Осень");
+        else alert("Зима");
+      }
+      function t40() {
+        let name = prompt("Имя:");
+        let age = Number(prompt("Возраст:"));
+        let student = confirm("Ты студент?");
+        let lang = prompt("Любимый язык программирования:");
+        let status = student ? "Студент" : "Не студент";
+        alert(
+          "=== АНКЕТА ===\nИмя: " +
+            name +
+            "\nВозраст: " +
+            age +
+            "\nСтатус: " +
+            status +
+            "\nЯзык: " +
+            lang,
+        );
+      }
+    </script>
+  </body>
+</html>
