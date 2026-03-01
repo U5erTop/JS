@@ -1,0 +1,1311 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS Tasks — Циклы и Switch</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap");
+
+      :root {
+        --bg: #0a0a0f;
+        --surface: #13131a;
+        --card: #1a1a25;
+        --border: #2a2a3d;
+        --accent: #7c3aed;
+        --accent2: #06b6d4;
+        --accent3: #f59e0b;
+        --accent4: #10b981;
+        --accent5: #ef4444;
+        --accent6: #ec4899;
+        --text: #e2e8f0;
+        --muted: #64748b;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background:
+          radial-gradient(
+            ellipse at 20% 20%,
+            rgba(6, 182, 212, 0.07) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 80% 80%,
+            rgba(16, 185, 129, 0.06) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 50% 10%,
+            rgba(236, 72, 153, 0.04) 0%,
+            transparent 40%
+          );
+        animation: bgShift 18s ease-in-out infinite alternate;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      @keyframes bgShift {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        100% {
+          transform: translate(2%, 2%) rotate(3deg);
+        }
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      header {
+        padding: 60px 20px 40px;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      .badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #06b6d4, #10b981);
+        color: white;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 6px 16px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        font-size: clamp(2.5rem, 6vw, 5rem);
+        font-weight: 900;
+        line-height: 1.1;
+        background: linear-gradient(135deg, #fff 0%, #06b6d4 50%, #10b981 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 16px;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 1.1rem;
+        margin-bottom: 40px;
+      }
+
+      .stats {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        flex-wrap: wrap;
+        margin-bottom: 50px;
+      }
+
+      .stat-chip {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.9rem;
+      }
+
+      .stat-chip .num {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--accent2);
+      }
+
+      .progress-wrap {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px 24px;
+        margin-bottom: 40px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .progress-label {
+        font-weight: 600;
+        font-size: 0.95rem;
+        white-space: nowrap;
+      }
+      .progress-bar-outer {
+        flex: 1;
+        min-width: 200px;
+        height: 8px;
+        background: var(--border);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .progress-bar-inner {
+        height: 100%;
+        background: linear-gradient(90deg, #06b6d4, #10b981);
+        border-radius: 4px;
+        transition: width 0.4s ease;
+      }
+      .progress-count {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.9rem;
+        color: var(--accent2);
+        white-space: nowrap;
+      }
+
+      .btn-reset {
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 16px;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .btn-reset:hover {
+        border-color: var(--accent5);
+        color: var(--accent5);
+      }
+
+      .controls {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .search-wrap {
+        flex: 1;
+        min-width: 250px;
+        position: relative;
+      }
+
+      .search-wrap input {
+        width: 100%;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 16px 12px 44px;
+        color: var(--text);
+        font-family: "Inter", sans-serif;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      .search-wrap input:focus {
+        border-color: var(--accent2);
+      }
+
+      .search-wrap::before {
+        content: "🔍";
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1rem;
+      }
+
+      .filter-btn {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 16px;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+
+      .filter-btn:hover,
+      .filter-btn.active {
+        border-color: var(--accent2);
+        color: white;
+        background: rgba(6, 182, 212, 0.15);
+      }
+
+      .topic-section {
+        margin-bottom: 60px;
+      }
+
+      .topic-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .topic-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        flex-shrink: 0;
+      }
+
+      .topic-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      .topic-count {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.8rem;
+        color: var(--muted);
+        background: var(--surface);
+        padding: 4px 12px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+      }
+
+      .task-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 16px;
+      }
+
+      .task-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.25s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .task-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          var(--card-color, #06b6d4),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      .task-card:hover {
+        border-color: var(--card-color, #06b6d4);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .task-card:hover::before {
+        opacity: 1;
+      }
+
+      .task-card.done {
+        background: rgba(16, 185, 129, 0.07);
+        border-color: rgba(16, 185, 129, 0.3);
+      }
+
+      .task-card.done::before {
+        opacity: 1;
+        background: linear-gradient(90deg, #10b981, transparent);
+      }
+
+      .task-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .task-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.75rem;
+        color: var(--muted);
+        background: var(--surface);
+        padding: 3px 8px;
+        border-radius: 6px;
+        flex-shrink: 0;
+      }
+
+      .difficulty {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 20px;
+      }
+
+      .diff-easy {
+        background: rgba(16, 185, 129, 0.15);
+        color: #10b981;
+      }
+      .diff-medium {
+        background: rgba(245, 158, 11, 0.15);
+        color: #f59e0b;
+      }
+      .diff-hard {
+        background: rgba(239, 68, 68, 0.15);
+        color: #ef4444;
+      }
+
+      .task-text {
+        font-size: 0.92rem;
+        line-height: 1.6;
+        color: var(--text);
+        margin-bottom: 12px;
+      }
+
+      .task-code {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.78rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px 12px;
+        color: var(--accent2);
+        margin-bottom: 12px;
+        white-space: pre;
+        overflow-x: auto;
+      }
+
+      .task-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-top: 14px;
+      }
+
+      .btn-done {
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 7px 14px;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-done:hover {
+        border-color: #10b981;
+        color: #10b981;
+      }
+      .task-card.done .btn-done {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: #10b981;
+        color: #10b981;
+      }
+
+      .btn-hint {
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 7px 14px;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+
+      .btn-hint:hover {
+        border-color: var(--accent3);
+        color: var(--accent3);
+      }
+
+      .hint-box {
+        display: none;
+        background: rgba(245, 158, 11, 0.07);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 0.82rem;
+        color: var(--accent3);
+        line-height: 1.5;
+        margin-top: 10px;
+      }
+
+      .hint-box.show {
+        display: block;
+      }
+
+      .float-counter {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: linear-gradient(135deg, #06b6d4, #10b981);
+        border-radius: 20px;
+        padding: 14px 22px;
+        font-weight: 700;
+        font-size: 1rem;
+        box-shadow: 0 8px 30px rgba(6, 182, 212, 0.4);
+        z-index: 100;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+
+      .float-counter:hover {
+        transform: scale(1.05);
+      }
+
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--accent2);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      @media (max-width: 600px) {
+        .task-grid {
+          grid-template-columns: 1fr;
+        }
+        h1 {
+          font-size: 2.5rem;
+        }
+        .float-counter {
+          bottom: 16px;
+          right: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="badge">✦ JavaScript Practice</div>
+      <h1>100 заданий<br />Циклы & Switch</h1>
+      <p class="subtitle">Прокачай циклы while/for и конструкцию switch</p>
+
+      <div class="stats">
+        <div class="stat-chip"><span class="num">100</span> заданий</div>
+        <div class="stat-chip"><span class="num">2</span> темы</div>
+        <div class="stat-chip">
+          <span class="num" id="easyCount">0</span> лёгких
+        </div>
+        <div class="stat-chip">
+          <span class="num" id="medCount">0</span> средних
+        </div>
+        <div class="stat-chip">
+          <span class="num" id="hardCount">0</span> сложных
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="progress-wrap">
+        <span class="progress-label">⚡ Прогресс</span>
+        <div class="progress-bar-outer">
+          <div
+            class="progress-bar-inner"
+            id="progressBar"
+            style="width: 0%"
+          ></div>
+        </div>
+        <span class="progress-count" id="progressText">0 / 100</span>
+        <button class="btn-reset" onclick="resetAll()">Сбросить</button>
+      </div>
+
+      <div class="controls">
+        <div class="search-wrap">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Поиск задания..."
+            oninput="filterTasks()"
+          />
+        </div>
+        <button class="filter-btn active" onclick="setFilter('all', this)">
+          Все
+        </button>
+        <button class="filter-btn" onclick="setFilter('easy', this)">
+          Лёгкие
+        </button>
+        <button class="filter-btn" onclick="setFilter('medium', this)">
+          Средние
+        </button>
+        <button class="filter-btn" onclick="setFilter('hard', this)">
+          Сложные
+        </button>
+        <button class="filter-btn" onclick="setFilter('done', this)">
+          Выполненные
+        </button>
+        <button class="filter-btn" onclick="setFilter('undone', this)">
+          Невыполненные
+        </button>
+      </div>
+
+      <div id="tasksRoot"></div>
+    </div>
+
+    <div class="float-counter" id="floatCounter">✅ 0 / 100</div>
+
+    <script>
+      const TOPICS = [
+        {
+          id: "loops",
+          title: "Циклы: while и for",
+          icon: "🔁",
+          color: "#06b6d4",
+          tasks: [
+            // --- EASY ---
+            {
+              d: "easy",
+              t: "Напиши цикл <code>for</code> который выводит числа от 1 до 10.",
+              hint: "for(let i=1; i<=10; i++) console.log(i)",
+            },
+            {
+              d: "easy",
+              t: "Напиши цикл <code>while</code> который выводит числа от 1 до 10.",
+              hint: "let i=1; while(i<=10){ console.log(i); i++; }",
+            },
+            {
+              d: "easy",
+              t: "Что такое <code>do...while</code>? Чем он отличается от <code>while</code>?",
+              hint: "do...while выполняется хотя бы один раз, даже если условие ложно с самого начала",
+            },
+            {
+              d: "easy",
+              t: "Напиши <code>do...while</code> который просит ввод пока не введут число больше 10.",
+              hint: 'do { x = prompt("Введи > 10"); } while(x <= 10)',
+            },
+            {
+              d: "easy",
+              t: "Что такое оператор <code>break</code>? Напиши цикл который останавливается на числе 5.",
+              hint: "if(i === 5) break;",
+            },
+            {
+              d: "easy",
+              t: "Что такое оператор <code>continue</code>? Напиши цикл который пропускает чётные числа.",
+              hint: "if(i % 2 === 0) continue;",
+            },
+            {
+              d: "easy",
+              t: "Напиши цикл <code>for</code> в обратном порядке от 10 до 1.",
+              hint: "for(let i=10; i>=1; i--)",
+            },
+            {
+              d: "easy",
+              t: "Вычисли сумму чисел от 1 до 100 с помощью цикла.",
+              hint: "let sum=0; for(let i=1; i<=100; i++) sum+=i;",
+            },
+            {
+              d: "easy",
+              t: "Напиши цикл который выводит только нечётные числа от 1 до 20.",
+              hint: "for(let i=1; i<=20; i+=2) или проверка i%2 !== 0",
+            },
+            {
+              d: "easy",
+              t: "Что такое бесконечный цикл? Напиши пример и объясни как его прервать.",
+              hint: "while(true){ ... if(cond) break; }",
+            },
+            {
+              d: "easy",
+              t: "Напиши цикл <code>for...of</code> для перебора массива <code>[10, 20, 30, 40]</code>.",
+              hint: "for(const val of arr) console.log(val)",
+            },
+            {
+              d: "easy",
+              t: "Напиши цикл <code>for...in</code> для перебора ключей объекта <code>{a:1, b:2, c:3}</code>.",
+              hint: "for(const key in obj) console.log(key, obj[key])",
+            },
+            {
+              d: "easy",
+              t: "Чем <code>for...of</code> отличается от <code>for...in</code>?",
+              hint: "of — значения итерируемого объекта; in — ключи объекта",
+            },
+            {
+              d: "easy",
+              t: 'Напиши цикл который считает количество гласных в строке "hello world".',
+              hint: 'for(const ch of str) if("aeiou".includes(ch)) count++',
+            },
+            {
+              d: "easy",
+              t: "Напиши цикл умножающий все элементы массива <code>[1,2,3,4,5]</code> (произведение).",
+              hint: "let prod=1; for(const n of arr) prod*=n;",
+            },
+            {
+              d: "easy",
+              t: "Напиши цикл который создаёт массив квадратов чисел от 1 до 10.",
+              hint: "const res=[]; for(let i=1;i<=10;i++) res.push(i*i)",
+            },
+
+            // --- MEDIUM ---
+            {
+              d: "medium",
+              t: "Напиши вложенные циклы для таблицы умножения (от 1×1 до 10×10).",
+              hint: "for(let i=1;i<=10;i++) for(let j=1;j<=10;j++) ...",
+            },
+            {
+              d: "medium",
+              t: "Напиши цикл который ищет первый элемент массива больше заданного числа.",
+              hint: "for(const x of arr){ if(x > target) { result=x; break; } }",
+            },
+            {
+              d: "medium",
+              t: "Напиши FizzBuzz используя цикл for от 1 до 100.",
+              hint: 'if(i%15===0) "FizzBuzz" else if(i%3===0) "Fizz" ...',
+            },
+            {
+              d: "medium",
+              t: "Реализуй функцию <code>repeat(str, n)</code> без использования String.repeat().",
+              hint: 'let res=""; for(let i=0;i<n;i++) res+=str; return res;',
+            },
+            {
+              d: "medium",
+              t: "Напиши цикл который разворачивает строку (reverse string) без использования .reverse().",
+              hint: 'let res=""; for(let i=str.length-1; i>=0; i--) res+=str[i]',
+            },
+            {
+              d: "medium",
+              t: "Найди максимальный элемент массива используя цикл (без Math.max).",
+              hint: "let max=arr[0]; for(const x of arr) if(x>max) max=x;",
+            },
+            {
+              d: "medium",
+              t: "Напиши цикл который удаляет дубликаты из массива без использования Set.",
+              hint: "const res=[]; for(const x of arr) if(!res.includes(x)) res.push(x)",
+            },
+            {
+              d: "medium",
+              t: "Реализуй функцию <code>range(start, end, step)</code> возвращающую массив чисел.",
+              hint: "while(current < end){ arr.push(current); current+=step; }",
+            },
+            {
+              d: "medium",
+              t: "Напиши цикл который проверяет является ли число палиндромом (например 121).",
+              hint: "Сравни строку с её реверсом через цикл",
+            },
+            {
+              d: "medium",
+              t: "Реализуй <code>flatten(arr)</code> для одного уровня вложенности через цикл.",
+              hint: "for(const item of arr) if(Array.isArray(item)) res.push(...item); else res.push(item)",
+            },
+            {
+              d: "medium",
+              t: "Что такое метка (label) для цикла? Напиши пример с <code>break outerLoop</code>.",
+              hint: "outer: for(...)  for(...) { break outer; }",
+            },
+            {
+              d: "medium",
+              t: "Напиши цикл для двоичного поиска (binary search) в отсортированном массиве.",
+              hint: "while(left<=right){ mid=Math.floor((left+right)/2); ... }",
+            },
+            {
+              d: "medium",
+              t: "Реализуй функцию <code>countOccurrences(arr, val)</code> считающую вхождения значения.",
+              hint: "let count=0; for(const x of arr) if(x===val) count++; return count;",
+            },
+            {
+              d: "medium",
+              t: "Напиши цикл который собирает все уникальные слова из строки в массив.",
+              hint: 'str.split(" ").forEach: Set или includes проверка',
+            },
+            {
+              d: "medium",
+              t: "Реализуй функцию <code>zip(a, b)</code> через цикл — объединяет два массива попарно.",
+              hint: "for(let i=0; i<Math.min(a.length,b.length); i++) res.push([a[i],b[i]])",
+            },
+            {
+              d: "medium",
+              t: "Напиши цикл для построения треугольника из звёздочек (5 строк).",
+              hint: 'for(let i=1;i<=5;i++) console.log("*".repeat(i))',
+            },
+
+            // --- HARD ---
+            {
+              d: "hard",
+              t: "Реализуй алгоритм пузырьковой сортировки (bubble sort) через вложенные циклы.",
+              hint: "for(i) for(j) if(arr[j]>arr[j+1]) swap; — повторять пока нет перестановок",
+            },
+            {
+              d: "hard",
+              t: "Реализуй алгоритм сортировки вставками (insertion sort).",
+              hint: "for(i=1; i<n; i++){ key=arr[i]; j=i-1; while(j>=0 && arr[j]>key){ arr[j+1]=arr[j]; j--; } }",
+            },
+            {
+              d: "hard",
+              t: "Напиши итеративную (через цикл) версию <code>fibonacci(n)</code>.",
+              hint: "let a=0,b=1; for(let i=0;i<n;i++){ [a,b]=[b,a+b]; } return a;",
+            },
+            {
+              d: "hard",
+              t: "Реализуй функцию <code>flatten(arr, depth)</code> для произвольной глубины через цикл (без рекурсии).",
+              hint: "Используй стек: while(stack.length){ item=stack.pop(); if(Array.isArray && depth>0) stack.push(...item) }",
+            },
+            {
+              d: "hard",
+              t: "Напиши генератор простых чисел до N (решето Эратосфена).",
+              hint: "Создай boolean массив, вычёркивай кратные через вложенные циклы",
+            },
+            {
+              d: "hard",
+              t: "Реализуй функцию <code>chunk(arr, size)</code> разбивающую массив на подмассивы заданного размера.",
+              hint: "for(let i=0; i<arr.length; i+=size) res.push(arr.slice(i, i+size))",
+            },
+            {
+              d: "hard",
+              t: "Напиши итеративный обход дерева (BFS — обход в ширину) через цикл while и очередь.",
+              hint: "const queue=[root]; while(queue.length){ node=queue.shift(); queue.push(...node.children) }",
+            },
+            {
+              d: "hard",
+              t: "Реализуй <code>groupBy(arr, fn)</code> через цикл — группирует элементы по ключу.",
+              hint: "for(const x of arr){ const key=fn(x); (acc[key] ??= []).push(x) }",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>permutations(arr)</code> генерирующую все перестановки массива через цикл.",
+              hint: "Алгоритм Хипа или итеративный через стек состояний",
+            },
+            {
+              d: "hard",
+              t: "Реализуй ленивый итератор бесконечной последовательности Фибоначчи через генератор (function*).",
+              hint: "function* fib(){ let [a,b]=[0,1]; while(true){ yield a; [a,b]=[b,a+b]; } }",
+            },
+            {
+              d: "hard",
+              t: "Напиши цикл для нахождения наидлиннейшей подстроки без повторяющихся символов.",
+              hint: "Sliding window: два указателя + Set",
+            },
+            {
+              d: "hard",
+              t: "Реализуй матричное умножение через вложенные циклы.",
+              hint: "три вложенных for: i, j, k — C[i][j] += A[i][k] * B[k][j]",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>throttle(fn, delay)</code> через замыкание и Date.now().",
+              hint: "let last=0; return (...args)=>{ if(Date.now()-last>=delay){ last=Date.now(); fn(...args); } }",
+            },
+            {
+              d: "hard",
+              t: "Реализуй <code>takeWhile(arr, predicate)</code> и <code>dropWhile(arr, predicate)</code> через циклы.",
+              hint: "for(const x of arr){ if(!predicate(x)) break; result.push(x); }",
+            },
+            {
+              d: "hard",
+              t: "Напиши итеративный DFS (обход в глубину) для графа через цикл while и стек.",
+              hint: "const stack=[start]; while(stack.length){ v=stack.pop(); visited.add(v); stack.push(...neighbors[v]) }",
+            },
+            {
+              d: "hard",
+              t: "Реализуй функцию <code>slidingWindowMax(arr, k)</code> — максимум в каждом окне размера k.",
+              hint: "Deque подход или простой O(n*k) через for с вложенным цикло",
+            },
+            {
+              d: "hard",
+              t: "Напиши оптимизированный цикл для поиска двух элементов в массиве с суммой равной target (Two Sum).",
+              hint: "Map для O(n): for(x of arr){ if(map.has(target-x)) return [map.get(target-x), i]; map.set(x,i) }",
+            },
+            {
+              d: "hard",
+              t: "Что такое оптимизация хвостовых вызовов (TCO)? Как переписать рекурсию в цикл?",
+              hint: "Аккумулятор + цикл while вместо рекурсии",
+            },
+            {
+              d: "hard",
+              t: "Реализуй <code>memoize(fn)</code> использующий Map как кэш, через замыкание.",
+              hint: "const cache=new Map(); return (...args)=>{ const key=JSON.stringify(args); cache.has(key) ? cache.get(key) : cache.set(key, fn(...args)) }",
+            },
+            {
+              d: "hard",
+              t: "Напиши генератор <code>function* range(start, end, step)</code> и перебери его через for...of.",
+              hint: "while(current < end){ yield current; current += step; }",
+            },
+          ],
+        },
+        {
+          id: "switch",
+          title: "Конструкция switch",
+          icon: "🔀",
+          color: "#10b981",
+          tasks: [
+            // --- EASY ---
+            {
+              d: "easy",
+              t: "Напиши switch который выводит название дня недели по числу от 1 до 7.",
+              hint: 'switch(day){ case 1: return "Понедельник"; ... default: return "Неверный день"; }',
+            },
+            {
+              d: "easy",
+              t: "Что произойдёт если забыть <code>break</code> в case? Напиши пример с fallthrough.",
+              hint: 'Выполнение "провалится" в следующий case. switch(1){ case 1: case 2: console.log("1 или 2") }',
+            },
+            {
+              d: "easy",
+              t: "Как работает <code>default</code> в switch? Обязателен ли он?",
+              hint: "default — как else, выполняется если ни один case не совпал. Не обязателен.",
+            },
+            {
+              d: "easy",
+              t: "Напиши switch для конвертации буквенной оценки в описание: A→Отлично, B→Хорошо, C→Удовл., иначе→Неверно.",
+              hint: 'switch(grade){ case "A": return "Отлично"; ... }',
+            },
+            {
+              d: "easy",
+              t: "Напиши switch который использует fallthrough намеренно: выходные — суббота и воскресенье.",
+              hint: 'case "Суббота": case "Воскресенье": return "Выходной"; break;',
+            },
+            {
+              d: "easy",
+              t: 'Может ли case содержать строку? Напиши switch обрабатывающий команды: "start", "stop", "pause".',
+              hint: 'switch(cmd){ case "start": ...; case "stop": ...; }',
+            },
+            {
+              d: "easy",
+              t: "Чем switch лучше длинной цепочки if-else? В каких случаях предпочтительнее?",
+              hint: "Читаемость при множестве равных проверок одной переменной; производительность при JIT-компиляции",
+            },
+            {
+              d: "easy",
+              t: "Напиши switch для определения времени суток: 0-5→Ночь, 6-11→Утро, 12-17→День, 18-23→Вечер.",
+              hint: 'switch(true){ case h<6: return "Ночь"; case h<12: return "Утро"; ... }',
+            },
+            {
+              d: "easy",
+              t: "Можно ли в switch использовать <code>return</code> вместо <code>break</code>? В чём разница?",
+              hint: "return выходит из функции полностью, break — только из switch",
+            },
+            {
+              d: "easy",
+              t: 'Напиши switch принимающий тип фигуры ("circle","square","triangle") и возвращающий количество углов.',
+              hint: 'case "circle": return 0; case "square": return 4; case "triangle": return 3;',
+            },
+            {
+              d: "easy",
+              t: "Что вернёт switch если переменная <code>undefined</code> и нет <code>default</code>?",
+              hint: "Ничего не выполнится, switch просто завершится без результата",
+            },
+            {
+              d: "easy",
+              t: "Напиши switch для HTTP-статусов: 200→OK, 404→Not Found, 500→Server Error, иначе→Unknown.",
+              hint: 'switch(status){ case 200: return "OK"; case 404: return "Not Found"; ... }',
+            },
+            {
+              d: "easy",
+              t: "Как switch сравнивает значения — через == или ===?",
+              hint: 'Строгое === — типы должны совпадать! "1" !== 1',
+            },
+            {
+              d: "easy",
+              t: "Напиши switch-калькулятор: принимает operator (+,-,*,/) и два числа, возвращает результат.",
+              hint: 'switch(op){ case "+": return a+b; case "-": return a-b; ... }',
+            },
+            {
+              d: "easy",
+              t: "Можно ли вложить switch внутрь switch? Напиши пример.",
+              hint: 'Да, вложенные switch работают. case "A": switch(subVal){ ... }',
+            },
+            {
+              d: "easy",
+              t: "Напиши switch который реагирует на нажатие клавиши: ArrowUp, ArrowDown, ArrowLeft, ArrowRight.",
+              hint: 'switch(event.key){ case "ArrowUp": moveUp(); break; ... }',
+            },
+
+            // --- MEDIUM ---
+            {
+              d: "medium",
+              t: "Перепиши функцию с длинной цепочкой if-else-if на switch.",
+              hint: "Вынеси общее условие в switch(true) или по значению переменной",
+            },
+            {
+              d: "medium",
+              t: "Реализуй switch-диспетчер для простого командного интерпретатора (REPL).",
+              hint: 'switch(command){ case "help": printHelp(); break; case "exit": process.exit(); ... }',
+            },
+            {
+              d: "medium",
+              t: 'Что такое паттерн "switch с объектом" (object lookup)? Перепиши switch на объект.',
+              hint: 'const map = { "add": (a,b)=>a+b }; return (map[op] ?? defaultFn)(a,b)',
+            },
+            {
+              d: "medium",
+              t: "Напиши switch для конечного автомата светофора: red→green→yellow→red.",
+              hint: 'switch(state){ case "red": return "green"; case "green": return "yellow"; ... }',
+            },
+            {
+              d: "medium",
+              t: "Используй switch для парсинга токенов простого языка: NUMBER, STRING, OPERATOR, KEYWORD.",
+              hint: 'switch(token.type){ case "NUMBER": parseNumber(token); break; ... }',
+            },
+            {
+              d: "medium",
+              t: 'Реализуй switch для роутинга URL: "/", "/about", "/contact", "/404".',
+              hint: 'switch(path){ case "/": renderHome(); break; ... default: render404(); }',
+            },
+            {
+              d: "medium",
+              t: "Можно ли в case использовать диапазоны? Реализуй с помощью <code>switch(true)</code>.",
+              hint: 'switch(true){ case score>=90: return "A"; case score>=80: return "B"; ... }',
+            },
+            {
+              d: "medium",
+              t: "Напиши switch с несколькими case без break (intentional fallthrough) и объясни логику.",
+              hint: 'case "admin": case "superadmin": grantAccess(); break;',
+            },
+            {
+              d: "medium",
+              t: 'Реализуй switch для форматирования числа: 1→"1st", 2→"2nd", 3→"3rd", остальные→"Nth".',
+              hint: 'switch(n){ case 1: return n+"st"; case 2: return n+"nd"; case 3: return n+"rd"; default: return n+"th" }',
+            },
+            {
+              d: "medium",
+              t: 'Напиши switch для конвертации нотации нот: "C"→До, "D"→Ре, "E"→Ми и т.д.',
+              hint: 'switch(note){ case "C": return "До"; case "D": return "Ре"; ... }',
+            },
+            {
+              d: "medium",
+              t: "Что происходит с переменными объявленными внутри case? Нужны ли фигурные скобки?",
+              hint: "Нужны! Без {} переменные case попадают в общую область switch и конфликтуют",
+            },
+            {
+              d: "medium",
+              t: "Напиши switch-обработчик событий DOM: click, mouseover, keydown — разные действия.",
+              hint: 'switch(event.type){ case "click": handleClick(event); break; ... }',
+            },
+            {
+              d: "medium",
+              t: "Реализуй функцию <code>getAnimalSound(animal)</code> используя switch: cat→meow, dog→woof и т.д.",
+              hint: 'switch(animal){ case "cat": return "meow"; ... default: return "..." }',
+            },
+            {
+              d: "medium",
+              t: "Напиши switch для определения знака зодиака по месяцу и дню рождения.",
+              hint: 'switch(month){ case 1: return day<=20 ? "Козерог" : "Водолей"; ... }',
+            },
+            {
+              d: "medium",
+              t: "Можно ли вернуть значение из switch напрямую без промежуточной переменной? Покажи два подхода.",
+              hint: "1) IIFE: const res = (() => { switch... })() 2) функция с return внутри case",
+            },
+            {
+              d: "medium",
+              t: 'Что такое "exhaustive switch"? Как убедиться что все случаи обработаны?',
+              hint: 'В TypeScript: default: const _: never = val. В JS: default: throw new Error("Unhandled: "+val)',
+            },
+
+            // --- HARD ---
+            {
+              d: "hard",
+              t: 'Реализуй паттерн "State Machine" через switch: состояния idle, loading, success, error.',
+              hint: 'switch(this.state){ case "idle": ...; case "loading": ...; } с transition функцией',
+            },
+            {
+              d: "hard",
+              t: "Сравни производительность switch vs if-else vs object lookup. В каких случаях что быстрее?",
+              hint: "switch — JIT может оптимизировать в jump table; object — O(1) hash; if-else — O(n)",
+            },
+            {
+              d: "hard",
+              t: "Реализуй интерпретатор простого стекового языка (RPN калькулятор) через switch.",
+              hint: 'switch(token){ case "+": stack.push(stack.pop()+stack.pop()); break; ... }',
+            },
+            {
+              d: "hard",
+              t: 'Напиши switch-based event bus: "user:login", "user:logout", "data:fetch", "data:error".',
+              hint: 'switch(event){ case "user:login": loginHandlers.forEach(h=>h(data)); ... }',
+            },
+            {
+              d: "hard",
+              t: "Реализуй AST-интерпретатор (обход дерева выражений) через switch по типу узла.",
+              hint: 'switch(node.type){ case "BinaryExpression": return eval(node.left) + eval(node.right); ... }',
+            },
+            {
+              d: "hard",
+              t: "Как использовать Symbol как case в switch? Напиши пример.",
+              hint: 'const TYPE = Symbol("type"); switch(val){ case TYPE: ... } — строгое ===, Symbol уникален',
+            },
+            {
+              d: "hard",
+              t: 'Реализуй паттерн "Command" через switch: каждый case вызывает соответствующий handler из реестра.',
+              hint: "const handlers = { add: AddCommand, remove: RemoveCommand }; switch или handlers[type]?.execute()",
+            },
+            {
+              d: "hard",
+              t: "Напиши middleware-цепочку для обработки запросов где тип запроса определяется через switch.",
+              hint: 'switch(req.method){ case "GET": return getMiddleware(req, res, next); ... }',
+            },
+            {
+              d: "hard",
+              t: "Что такое Tagged Union / Discriminated Union? Реализуй обработку через switch.",
+              hint: 'type Shape = {kind:"circle", r} | {kind:"rect", w, h}; switch(shape.kind){ ... }',
+            },
+            {
+              d: "hard",
+              t: "Реализуй Turing-машину через switch: состояния, лента, переходы.",
+              hint: 'while(!halted){ switch(state+"_"+tape[head]){ case "q0_0": state="q1"; tape[head]="1"; head++; ... } }',
+            },
+            {
+              d: "hard",
+              t: "Напиши switch для парсера простых выражений: числа, операторы, скобки — tokenizer.",
+              hint: 'switch(char){ case "+": case "-": tokens.push({type:"op",val:char}); break; ... }',
+            },
+            {
+              d: "hard",
+              t: 'Реализуй паттерн "Visitor" используя switch для обхода разных типов узлов AST.',
+              hint: 'visit(node){ switch(node.type){ case "Literal": return visitLiteral(node); ... } }',
+            },
+            {
+              d: "hard",
+              t: 'Как сделать switch "type-safe" в чистом JS (без TypeScript)? Напиши защитный default.',
+              hint: "default: throw new TypeError(`Unexpected value: ${val} (type: ${typeof val})`)",
+            },
+            {
+              d: "hard",
+              t: "Реализуй конечный автомат для парсинга JSON вручную через switch.",
+              hint: 'switch(state){ case "START": if(char==="{"){ state="OBJECT"; } else if(char===\'[\'){ state="ARRAY"; } ... }',
+            },
+            {
+              d: "hard",
+              t: "Напиши switch-based Redux-подобный reducer: actions ADD, REMOVE, UPDATE, RESET.",
+              hint: 'function reducer(state, action){ switch(action.type){ case "ADD": return [...state, action.payload]; ... } }',
+            },
+            {
+              d: "hard",
+              t: 'Что такое "fall-through" уязвимость в безопасности? Как случайный fallthrough в switch может создать баги?',
+              hint: 'Например: case "admin" провалится в case "user" если забыть break — даёт лишние права',
+            },
+            {
+              d: "hard",
+              t: "Реализуй систему плагинов где каждый плагин регистрирует свой case в центральный диспетчер.",
+              hint: "const registry = new Map(); plugins.forEach(p => registry.set(p.type, p.handler))",
+            },
+            {
+              d: "hard",
+              t: "Напиши switch для обработки байткода простой виртуальной машины: PUSH, POP, ADD, SUB, PRINT, HALT.",
+              hint: "switch(opcode){ case 0x01: stack.push(bytecode[++ip]); break; case 0x02: ... }",
+            },
+          ],
+        },
+      ];
+
+      // --- State ---
+      const STORAGE_KEY = "jsTasks2_done";
+      let done = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      let currentFilter = "all";
+      let searchQuery = "";
+
+      const TOTAL = 100;
+
+      function renderAll() {
+        const root = document.getElementById("tasksRoot");
+        root.innerHTML = "";
+
+        let easyC = 0,
+          medC = 0,
+          hardC = 0;
+        TOPICS.forEach((t) =>
+          t.tasks.forEach((tk) => {
+            if (tk.d === "easy") easyC++;
+            if (tk.d === "medium") medC++;
+            if (tk.d === "hard") hardC++;
+          }),
+        );
+        document.getElementById("easyCount").textContent = easyC;
+        document.getElementById("medCount").textContent = medC;
+        document.getElementById("hardCount").textContent = hardC;
+
+        let taskNum = 0;
+        TOPICS.forEach((topic) => {
+          const sec = document.createElement("section");
+          sec.className = "topic-section";
+          sec.dataset.topicId = topic.id;
+
+          const header = document.createElement("div");
+          header.className = "topic-header";
+          header.innerHTML = `
+      <div class="topic-icon" style="background:${topic.color}22;color:${topic.color}">${topic.icon}</div>
+      <span class="topic-title">${topic.title}</span>
+      <span class="topic-count">${topic.tasks.length} заданий</span>
+    `;
+          sec.appendChild(header);
+
+          const grid = document.createElement("div");
+          grid.className = "task-grid";
+
+          topic.tasks.forEach((task, i) => {
+            taskNum++;
+            const id = `${topic.id}_${i}`;
+            const card = document.createElement("div");
+            card.className = `task-card${done[id] ? " done" : ""}`;
+            card.style.setProperty("--card-color", topic.color);
+            card.dataset.id = id;
+            card.dataset.diff = task.d;
+            card.dataset.done = done[id] ? "1" : "0";
+            card.dataset.text = task.t.toLowerCase();
+
+            const diffLabel = {
+              easy: "Лёгкое",
+              medium: "Среднее",
+              hard: "Сложное",
+            }[task.d];
+            const diffClass = {
+              easy: "diff-easy",
+              medium: "diff-medium",
+              hard: "diff-hard",
+            }[task.d];
+
+            card.innerHTML = `
+        <div class="task-top">
+          <span class="task-num">#${String(taskNum).padStart(3, "0")}</span>
+          <span class="difficulty ${diffClass}">${diffLabel}</span>
+        </div>
+        <div class="task-text">${task.t}</div>
+        <div class="task-actions">
+          <button class="btn-done" onclick="toggleDone('${id}', this)">
+            ${done[id] ? "✅ Сделано" : "○ Выполнено"}
+          </button>
+          <button class="btn-hint" onclick="toggleHint(this)">💡 Подсказка</button>
+        </div>
+        <div class="hint-box">${task.hint}</div>
+      `;
+            grid.appendChild(card);
+          });
+
+          sec.appendChild(grid);
+          root.appendChild(sec);
+        });
+
+        updateProgress();
+        applyFilter();
+      }
+
+      function toggleDone(id, btn) {
+        done[id] = !done[id];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(done));
+        const card = btn.closest(".task-card");
+        card.classList.toggle("done", done[id]);
+        card.dataset.done = done[id] ? "1" : "0";
+        btn.innerHTML = done[id] ? "✅ Сделано" : "○ Выполнено";
+        updateProgress();
+      }
+
+      function toggleHint(btn) {
+        const hintBox = btn.closest(".task-card").querySelector(".hint-box");
+        hintBox.classList.toggle("show");
+        btn.textContent = hintBox.classList.contains("show")
+          ? "🙈 Скрыть"
+          : "💡 Подсказка";
+      }
+
+      function updateProgress() {
+        const doneCount = Object.values(done).filter(Boolean).length;
+        const pct = ((doneCount / TOTAL) * 100).toFixed(1);
+        document.getElementById("progressBar").style.width = pct + "%";
+        document.getElementById("progressText").textContent =
+          `${doneCount} / ${TOTAL}`;
+        document.getElementById("floatCounter").textContent =
+          `✅ ${doneCount} / ${TOTAL}`;
+      }
+
+      function setFilter(filter, btn) {
+        currentFilter = filter;
+        document
+          .querySelectorAll(".filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        applyFilter();
+      }
+
+      function filterTasks() {
+        searchQuery = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        applyFilter();
+      }
+
+      function applyFilter() {
+        document.querySelectorAll(".task-card").forEach((card) => {
+          const diff = card.dataset.diff;
+          const isDone = card.dataset.done === "1";
+          const text = card.dataset.text;
+          let show = true;
+          if (currentFilter === "easy") show = diff === "easy";
+          else if (currentFilter === "medium") show = diff === "medium";
+          else if (currentFilter === "hard") show = diff === "hard";
+          else if (currentFilter === "done") show = isDone;
+          else if (currentFilter === "undone") show = !isDone;
+          if (searchQuery && !text.includes(searchQuery)) show = false;
+          card.classList.toggle("hidden", !show);
+        });
+
+        document.querySelectorAll(".topic-section").forEach((sec) => {
+          const visible = [...sec.querySelectorAll(".task-card")].some(
+            (c) => !c.classList.contains("hidden"),
+          );
+          sec.classList.toggle("hidden", !visible);
+        });
+      }
+
+      function resetAll() {
+        if (confirm("Сбросить весь прогресс?")) {
+          done = {};
+          localStorage.removeItem(STORAGE_KEY);
+          renderAll();
+        }
+      }
+
+      renderAll();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1809 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS Tasks — 200 заданий</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap");
+
+      :root {
+        --bg: #0a0a0f;
+        --surface: #13131a;
+        --card: #1a1a25;
+        --border: #2a2a3d;
+        --accent: #7c3aed;
+        --accent2: #06b6d4;
+        --accent3: #f59e0b;
+        --accent4: #10b981;
+        --accent5: #ef4444;
+        --accent6: #ec4899;
+        --text: #e2e8f0;
+        --muted: #64748b;
+        --glow: rgba(124, 58, 237, 0.3);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* Animated background */
+      body::before {
+        content: "";
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background:
+          radial-gradient(
+            ellipse at 20% 20%,
+            rgba(124, 58, 237, 0.08) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 80% 80%,
+            rgba(6, 182, 212, 0.06) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            ellipse at 50% 50%,
+            rgba(236, 72, 153, 0.04) 0%,
+            transparent 60%
+          );
+        animation: bgShift 15s ease-in-out infinite alternate;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      @keyframes bgShift {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        100% {
+          transform: translate(2%, 2%) rotate(3deg);
+        }
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Header */
+      header {
+        padding: 60px 20px 40px;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      .badge {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: white;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        padding: 6px 16px;
+        border-radius: 20px;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        font-size: clamp(2.5rem, 6vw, 5rem);
+        font-weight: 900;
+        line-height: 1.1;
+        background: linear-gradient(
+          135deg,
+          #fff 0%,
+          var(--accent2) 50%,
+          var(--accent) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 16px;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 1.1rem;
+        margin-bottom: 40px;
+      }
+
+      /* Stats bar */
+      .stats {
+        display: flex;
+        justify-content: center;
+        gap: 24px;
+        flex-wrap: wrap;
+        margin-bottom: 50px;
+      }
+
+      .stat-chip {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.9rem;
+      }
+
+      .stat-chip .num {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--accent2);
+      }
+
+      /* Search & Filter */
+      .controls {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 40px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .search-wrap {
+        flex: 1;
+        min-width: 250px;
+        position: relative;
+      }
+
+      .search-wrap input {
+        width: 100%;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 12px 16px 12px 44px;
+        color: var(--text);
+        font-family: "Inter", sans-serif;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      .search-wrap input:focus {
+        border-color: var(--accent);
+      }
+
+      .search-wrap::before {
+        content: "🔍";
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1rem;
+      }
+
+      .filter-btn {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 16px;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+
+      .filter-btn:hover,
+      .filter-btn.active {
+        border-color: var(--accent);
+        color: white;
+        background: rgba(124, 58, 237, 0.15);
+      }
+
+      /* Progress */
+      .progress-wrap {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px 24px;
+        margin-bottom: 40px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+
+      .progress-label {
+        font-weight: 600;
+        font-size: 0.95rem;
+        white-space: nowrap;
+      }
+      .progress-bar-outer {
+        flex: 1;
+        min-width: 200px;
+        height: 8px;
+        background: var(--border);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .progress-bar-inner {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        border-radius: 4px;
+        transition: width 0.4s ease;
+      }
+      .progress-count {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.9rem;
+        color: var(--accent2);
+        white-space: nowrap;
+      }
+
+      /* Topic sections */
+      .topic-section {
+        margin-bottom: 50px;
+      }
+
+      .topic-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .topic-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+      }
+
+      .topic-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+      }
+
+      .topic-count {
+        margin-left: auto;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.8rem;
+        color: var(--muted);
+        background: var(--surface);
+        padding: 4px 12px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+      }
+
+      /* Task grid */
+      .task-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 16px;
+      }
+
+      /* Task card */
+      .task-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.25s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .task-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          var(--card-color, var(--accent)),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      .task-card:hover {
+        border-color: var(--card-color, var(--accent));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .task-card:hover::before {
+        opacity: 1;
+      }
+
+      .task-card.done {
+        background: rgba(16, 185, 129, 0.07);
+        border-color: rgba(16, 185, 129, 0.3);
+      }
+
+      .task-card.done::before {
+        opacity: 1;
+        background: linear-gradient(90deg, var(--accent4), transparent);
+      }
+
+      .task-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .task-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.75rem;
+        color: var(--muted);
+        background: var(--surface);
+        padding: 3px 8px;
+        border-radius: 6px;
+        flex-shrink: 0;
+      }
+
+      .difficulty {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 20px;
+      }
+
+      .diff-easy {
+        background: rgba(16, 185, 129, 0.15);
+        color: var(--accent4);
+      }
+      .diff-medium {
+        background: rgba(245, 158, 11, 0.15);
+        color: var(--accent3);
+      }
+      .diff-hard {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--accent5);
+      }
+
+      .task-text {
+        font-size: 0.92rem;
+        line-height: 1.6;
+        color: var(--text);
+        margin-bottom: 12px;
+      }
+
+      .task-code {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.78rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px 12px;
+        color: var(--accent2);
+        margin-bottom: 12px;
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+
+      .task-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-top: 14px;
+      }
+
+      .btn-done {
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 7px 14px;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .btn-done:hover {
+        border-color: var(--accent4);
+        color: var(--accent4);
+      }
+      .task-card.done .btn-done {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: var(--accent4);
+        color: var(--accent4);
+      }
+
+      .btn-hint {
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 7px 14px;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        font-size: 0.8rem;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+
+      .btn-hint:hover {
+        border-color: var(--accent3);
+        color: var(--accent3);
+      }
+
+      .hint-box {
+        display: none;
+        background: rgba(245, 158, 11, 0.07);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 0.82rem;
+        color: var(--accent3);
+        line-height: 1.5;
+        margin-top: 10px;
+      }
+
+      .hint-box.show {
+        display: block;
+      }
+
+      /* Floating counter */
+      .float-counter {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        border-radius: 20px;
+        padding: 14px 22px;
+        font-weight: 700;
+        font-size: 1rem;
+        box-shadow: 0 8px 30px rgba(124, 58, 237, 0.4);
+        z-index: 100;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+
+      .float-counter:hover {
+        transform: scale(1.05);
+      }
+
+      /* Reset btn */
+      .btn-reset {
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 16px;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .btn-reset:hover {
+        border-color: var(--accent5);
+        color: var(--accent5);
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--accent);
+      }
+
+      /* Hidden */
+      .hidden {
+        display: none !important;
+      }
+
+      @media (max-width: 600px) {
+        .task-grid {
+          grid-template-columns: 1fr;
+        }
+        .stats {
+          gap: 12px;
+        }
+        h1 {
+          font-size: 2.5rem;
+        }
+        .float-counter {
+          bottom: 16px;
+          right: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="badge">✦ JavaScript Practice</div>
+      <h1>200 заданий<br />по JS</h1>
+      <p class="subtitle">Прокачай базу: от типов до нулевого слияния</p>
+
+      <div class="stats">
+        <div class="stat-chip"><span class="num">200</span> заданий</div>
+        <div class="stat-chip"><span class="num">6</span> тем</div>
+        <div class="stat-chip">
+          <span class="num" id="easyCount">0</span> лёгких
+        </div>
+        <div class="stat-chip">
+          <span class="num" id="medCount">0</span> средних
+        </div>
+        <div class="stat-chip">
+          <span class="num" id="hardCount">0</span> сложных
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="progress-wrap">
+        <span class="progress-label">⚡ Прогресс</span>
+        <div class="progress-bar-outer">
+          <div
+            class="progress-bar-inner"
+            id="progressBar"
+            style="width: 0%"
+          ></div>
+        </div>
+        <span class="progress-count" id="progressText">0 / 200</span>
+        <button class="btn-reset" onclick="resetAll()">Сбросить</button>
+      </div>
+
+      <div class="controls">
+        <div class="search-wrap">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Поиск задания..."
+            oninput="filterTasks()"
+          />
+        </div>
+        <button class="filter-btn active" onclick="setFilter('all', this)">
+          Все
+        </button>
+        <button class="filter-btn" onclick="setFilter('easy', this)">
+          Лёгкие
+        </button>
+        <button class="filter-btn" onclick="setFilter('medium', this)">
+          Средние
+        </button>
+        <button class="filter-btn" onclick="setFilter('hard', this)">
+          Сложные
+        </button>
+        <button class="filter-btn" onclick="setFilter('done', this)">
+          Выполненные
+        </button>
+        <button class="filter-btn" onclick="setFilter('undone', this)">
+          Невыполненные
+        </button>
+      </div>
+
+      <div id="tasksRoot"></div>
+    </div>
+
+    <div class="float-counter" id="floatCounter">✅ 0 / 200</div>
+
+    <script>
+      const TOPICS = [
+        {
+          id: "types",
+          title: "Преобразование типов",
+          icon: "🔄",
+          color: "#7c3aed",
+          tasks: [
+            {
+              d: "easy",
+              t: 'Что выведет <code>console.log(typeof "hello")</code>?',
+              hint: "typeof возвращает строку с названием типа",
+            },
+            {
+              d: "easy",
+              t: 'Преобразуй строку <code>"42"</code> в число тремя способами: Number(), parseInt(), унарный +',
+              hint: 'Number("42"), parseInt("42"), +"42"',
+            },
+            {
+              d: "easy",
+              t: 'Что вернёт <code>Number("")</code>? А <code>Number(" ")</code>?',
+              hint: "Пустая строка — 0, строка с пробелом — тоже 0",
+            },
+            {
+              d: "easy",
+              t: 'Что вернёт <code>Boolean(0)</code>, <code>Boolean("")</code>, <code>Boolean(null)</code>?',
+              hint: "Все три — false (ложные значения)",
+            },
+            {
+              d: "easy",
+              t: "Что вернёт <code>String(123)</code> и <code>(123).toString()</code>?",
+              hint: 'Оба вернут "123"',
+            },
+            {
+              d: "easy",
+              t: 'Что такое "falsy" значения в JS? Перечисли все.',
+              hint: 'false, 0, "", null, undefined, NaN, 0n',
+            },
+            {
+              d: "easy",
+              t: "Что вернёт <code>Number(true)</code> и <code>Number(false)</code>?",
+              hint: "true → 1, false → 0",
+            },
+            {
+              d: "easy",
+              t: "Что вернёт <code>Boolean([])</code> и <code>Boolean({})</code>?",
+              hint: "Оба объекта — truthy, даже пустые!",
+            },
+            {
+              d: "easy",
+              t: "Чем отличается явное (explicit) преобразование от неявного (implicit)?",
+              hint: "Явное — вы вызываете Number/String/Boolean, неявное — JS делает сам",
+            },
+            {
+              d: "medium",
+              t: 'Что выведет <code>console.log(1 + "2")</code>? Объясни почему.',
+              hint: 'Строка "12" — число приводится к строке',
+            },
+            {
+              d: "medium",
+              t: 'Что выведет <code>console.log("5" - 3)</code>? Почему результат отличается от сложения?',
+              hint: '"5" приводится к числу, результат 2',
+            },
+            {
+              d: "medium",
+              t: 'Что вернёт <code>parseInt("10px")</code>? А <code>Number("10px")</code>?',
+              hint: "parseInt → 10, Number → NaN",
+            },
+            {
+              d: "medium",
+              t: 'Что вернёт <code>parseInt("0x1F", 16)</code>? Объясни второй аргумент.',
+              hint: "31 — второй аргумент задаёт систему счисления",
+            },
+            {
+              d: "medium",
+              t: "Что такое NaN? Как проверить, является ли значение NaN?",
+              hint: "Number.isNaN() или isNaN() (осторожно с неявным приведением)",
+            },
+            {
+              d: "medium",
+              t: "Что вернёт <code>typeof NaN</code>?",
+              hint: '"number" — да, NaN имеет тип number, это баг JS',
+            },
+            {
+              d: "medium",
+              t: "Что выведет <code>console.log(null + 1)</code>? А <code>undefined + 1</code>?",
+              hint: "null → 0, undefined → NaN",
+            },
+            {
+              d: "medium",
+              t: "Как работает <code>toString(2)</code> для числа? Получи двоичное представление числа 10.",
+              hint: '(10).toString(2) → "1010"',
+            },
+            {
+              d: "medium",
+              t: 'Что вернёт <code>parseFloat("3.14abc")</code>?',
+              hint: "3.14 — парсит до первого нечислового символа",
+            },
+            {
+              d: "medium",
+              t: 'Что выведет <code>console.log("3" * "4")</code>? Почему это работает?',
+              hint: "12 — оба операнда неявно приводятся к числу",
+            },
+            {
+              d: "medium",
+              t: "Что вернёт <code>Number(null)</code> vs <code>Number(undefined)</code>?",
+              hint: "null → 0, undefined → NaN",
+            },
+            {
+              d: "hard",
+              t: 'Объясни, почему <code>[] + []</code> равно <code>""</code>, а <code>{} + []</code> может быть <code>0</code>.',
+              hint: '[] → "", {} интерпретируется как блок кода в начале выражения',
+            },
+            {
+              d: "hard",
+              t: 'Что вернёт <code>+"" </code>, <code>+[]</code>, <code>+{}</code>, <code>+null</code>?',
+              hint: "0, 0, NaN, 0",
+            },
+            {
+              d: "hard",
+              t: "Почему <code>0.1 + 0.2 !== 0.3</code> в JS? Как правильно сравнивать такие числа?",
+              hint: "Числа с плавающей точкой — IEEE 754. Используй Math.abs(a-b) < Number.EPSILON",
+            },
+            {
+              d: "hard",
+              t: 'Что вернёт <code>Number(Symbol("test"))</code>? Почему?',
+              hint: "TypeError — Symbol нельзя явно преобразовать в число",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>safeNumber(val)</code>, которая возвращает число или 0 если преобразование невозможно.",
+              hint: "Используй isNaN(Number(val))",
+            },
+            {
+              d: "hard",
+              t: "Что такое приведение через valueOf и toString? Какой метод вызывается первым при <code>+obj</code>?",
+              hint: 'При + сначала valueOf, потом toString (hint: "number" context)',
+            },
+            {
+              d: "hard",
+              t: "Объясни разницу между <code>parseInt</code> и <code>Math.trunc</code> для отсечения дробной части.",
+              hint: "parseInt парсит строку, Math.trunc работает с числом",
+            },
+            {
+              d: "hard",
+              t: "Что вернёт <code>Number([1])</code>, <code>Number([1,2])</code>, <code>Number([])</code>?",
+              hint: "1, NaN, 0 — массив сначала toString, потом в Number",
+            },
+            {
+              d: "hard",
+              t: "Что такое BigInt и как преобразовать между Number и BigInt?",
+              hint: "BigInt(42), Number(42n) — но осторожно с точностью",
+            },
+            {
+              d: "hard",
+              t: "Создай объект с кастомным [Symbol.toPrimitive], который при числовом контексте возвращает 100.",
+              hint: 'obj[Symbol.toPrimitive] = (hint) => hint === "number" ? 100 : "obj"',
+            },
+            {
+              d: "hard",
+              t: "Что произойдёт при <code>null + undefined</code>? Выведи результат и объясни.",
+              hint: "NaN — null → 0, undefined → NaN, 0 + NaN = NaN",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию которая принимает любое значение и возвращает его тип как строку, включая null.",
+              hint: 'typeof === "object" && val === null ? "null" : typeof val',
+            },
+            {
+              d: "hard",
+              t: "Что вернёт <code>~~3.7</code>? Объясни двойное побитовое НЕ.",
+              hint: "3 — двойное ~ приводит к int32 и отсекает дробную часть",
+            },
+          ],
+        },
+        {
+          id: "math",
+          title: "Базовые операторы, математика",
+          icon: "🧮",
+          color: "#06b6d4",
+          tasks: [
+            {
+              d: "easy",
+              t: "Что такое оператор остатка <code>%</code>? Вычисли <code>17 % 5</code>.",
+              hint: "Остаток от деления: 17 / 5 = 3 остаток 2",
+            },
+            {
+              d: "easy",
+              t: "Что такое оператор возведения в степень <code>**</code>? Вычисли <code>2 ** 10</code>.",
+              hint: "1024 — ES2016+",
+            },
+            {
+              d: "easy",
+              t: "Чем отличается <code>++i</code> от <code>i++</code>?",
+              hint: "Префикс — сначала инкремент, потом возврат. Постфикс — наоборот.",
+            },
+            {
+              d: "easy",
+              t: "Что выведет код: <code>let x=5; console.log(x++); console.log(x);</code>?",
+              hint: "5, затем 6",
+            },
+            {
+              d: "easy",
+              t: "Что выведет: <code>let x=5; console.log(++x);</code>?",
+              hint: "6 — значение уже после инкремента",
+            },
+            {
+              d: "easy",
+              t: "Каков результат <code>10 / 3</code> в JS? Как получить целочисленное деление?",
+              hint: "3.333... Используй Math.trunc(10/3) или Math.floor(10/3)",
+            },
+            {
+              d: "easy",
+              t: "Что возвращает <code>Math.abs(-42)</code>?",
+              hint: "42 — модуль числа",
+            },
+            {
+              d: "easy",
+              t: "Как получить случайное целое число от 1 до 10?",
+              hint: "Math.floor(Math.random() * 10) + 1",
+            },
+            {
+              d: "easy",
+              t: "Что вернёт <code>Math.max(1, 2, 3)</code> и <code>Math.min(1, 2, 3)</code>?",
+              hint: "3 и 1",
+            },
+            {
+              d: "easy",
+              t: "Что вернёт <code>Math.round(4.5)</code> и <code>Math.round(4.4)</code>?",
+              hint: "5 и 4",
+            },
+            {
+              d: "medium",
+              t: "Как округлить число до 2 знаков после запятой? Напиши несколько способов.",
+              hint: "toFixed(2), Math.round(x*100)/100",
+            },
+            {
+              d: "medium",
+              t: "Что вернёт <code>Math.floor(-3.1)</code> vs <code>Math.trunc(-3.1)</code>?",
+              hint: "-4 vs -3 — floor всегда в меньшую сторону",
+            },
+            {
+              d: "medium",
+              t: "Что такое <code>Infinity</code> в JS? Когда оно появляется?",
+              hint: "При делении на 0: 1/0 === Infinity",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию для вычисления гипотенузы по катетам (теорема Пифагора).",
+              hint: "Math.sqrt(a*a + b*b) или Math.hypot(a, b)",
+            },
+            {
+              d: "medium",
+              t: "Как проверить, является ли число чётным? Напиши однострочник.",
+              hint: "num % 2 === 0",
+            },
+            {
+              d: "medium",
+              t: "Что вернёт <code>0.1 + 0.2 === 0.3</code>? Как это исправить?",
+              hint: "false! Используй Number((0.1+0.2).toFixed(1)) === 0.3",
+            },
+            {
+              d: "medium",
+              t: "Что выведет <code>console.log(1/0)</code> и <code>console.log(-1/0)</code>?",
+              hint: "Infinity и -Infinity",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию <code>clamp(val, min, max)</code> ограничивающую значение диапазоном.",
+              hint: "Math.min(Math.max(val, min), max)",
+            },
+            {
+              d: "medium",
+              t: "Как получить все целые числа от a до b (включительно) в массив?",
+              hint: "Array.from({length: b-a+1}, (_, i) => a+i)",
+            },
+            {
+              d: "medium",
+              t: "Что такое побитовые операторы? Вычисли <code>5 & 3</code>, <code>5 | 3</code>, <code>5 ^ 3</code>.",
+              hint: "1, 7, 6 — AND, OR, XOR по битам",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию факториала через рекурсию и через цикл.",
+              hint: "Рекурсия: n <= 1 ? 1 : n * factorial(n-1)",
+            },
+            {
+              d: "hard",
+              t: "Реализуй функцию <code>fibonacci(n)</code> возвращающую n-й элемент последовательности Фибоначчи.",
+              hint: "Используй мемоизацию или динамическое программирование",
+            },
+            {
+              d: "hard",
+              t: "Что такое <code>Number.MAX_SAFE_INTEGER</code>? Почему важно знать это значение?",
+              hint: "2^53 - 1 = 9007199254740991 — максимальное точное целое",
+            },
+            {
+              d: "hard",
+              t: "Как сгенерировать криптографически случайное число в браузере?",
+              hint: "crypto.getRandomValues(new Uint32Array(1))[0]",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>isPrime(n)</code> — проверку на простое число.",
+              hint: "Проверяй делители до Math.sqrt(n)",
+            },
+            {
+              d: "hard",
+              t: "Реализуй <code>gcd(a, b)</code> — наибольший общий делитель (алгоритм Евклида).",
+              hint: "return b === 0 ? a : gcd(b, a % b)",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>round(num, precision)</code> для округления до n знаков.",
+              hint: "return Math.round(num * 10**precision) / 10**precision",
+            },
+            {
+              d: "hard",
+              t: "Что такое left shift <code><<</code> и right shift <code>>></code>? Чему равно <code>4 << 2</code>?",
+              hint: "16 — умножение на 2^2. Сдвиг битов влево",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию суммы цифр числа.",
+              hint: 'String(n).split("").reduce((acc, d) => acc + Number(d), 0)',
+            },
+            {
+              d: "hard",
+              t: "Реализуй функцию <code>lerp(a, b, t)</code> — линейную интерполяцию.",
+              hint: "return a + (b - a) * t",
+            },
+            {
+              d: "hard",
+              t: "Как работает оператор <code>>>></code> (unsigned right shift)? Чем отличается от <code>>></code>?",
+              hint: ">>> всегда заполняет нулями, >> — знаковый бит",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>digitCount(n)</code> — количество цифр в числе без String().",
+              hint: "Math.floor(Math.log10(Math.abs(n))) + 1",
+            },
+          ],
+        },
+        {
+          id: "comparison",
+          title: "Операторы сравнения",
+          icon: "⚖️",
+          color: "#f59e0b",
+          tasks: [
+            {
+              d: "easy",
+              t: "В чём разница между <code>==</code> и <code>===</code>?",
+              hint: "== с приведением типов, === строгое (без приведения)",
+            },
+            {
+              d: "easy",
+              t: 'Что вернёт <code>"5" == 5</code>? А <code>"5" === 5</code>?',
+              hint: "true и false",
+            },
+            {
+              d: "easy",
+              t: "Что вернёт <code>null == undefined</code>? А <code>null === undefined</code>?",
+              hint: "true и false — особый случай JS",
+            },
+            {
+              d: "easy",
+              t: "Что вернёт <code>null == 0</code>? Объясни.",
+              hint: "false — null равен только undefined при ==, ничему другому",
+            },
+            {
+              d: "easy",
+              t: 'Что вернёт сравнение строк <code>"apple" > "banana"</code>?',
+              hint: "false — сравнение по кодам символов",
+            },
+            {
+              d: "easy",
+              t: "Что вернёт <code>NaN === NaN</code>? Как правильно проверить на NaN?",
+              hint: "false — NaN не равен ничему. Используй Number.isNaN()",
+            },
+            {
+              d: "easy",
+              t: "Что означают операторы <code><</code>, <code>></code>, <code><=</code>, <code>>=</code>?",
+              hint: "Меньше, больше, меньше или равно, больше или равно",
+            },
+            {
+              d: "easy",
+              t: "Что вернёт <code>1 < 2 < 3</code>? А <code>3 > 2 > 1</code>?",
+              hint: "true и false! 3>2 = true, true > 1 = 0 > 1 = false",
+            },
+            {
+              d: "easy",
+              t: 'Что вернёт <code>"2" > "12"</code>? Почему?',
+              hint: '"2" > "12" = true — лексикографическое сравнение: "2" > "1"',
+            },
+            {
+              d: "easy",
+              t: "Напиши функцию <code>isEqual(a, b)</code> использующую строгое равенство.",
+              hint: "return a === b",
+            },
+            {
+              d: "medium",
+              t: 'Что выведет <code>console.log(0 == false)</code> и <code>console.log("" == false)</code>?',
+              hint: "true и true — оба приводятся к 0",
+            },
+            {
+              d: "medium",
+              t: "Что вернёт <code>[] == false</code>? Объясни цепочку приведений.",
+              hint: 'true — [] → "" → 0, false → 0',
+            },
+            {
+              d: "medium",
+              t: "Как сравнить два объекта по значению? Почему <code>{a:1} === {a:1}</code> — false?",
+              hint: "Объекты сравниваются по ссылке. Для значений — JSON.stringify или deep equal",
+            },
+            {
+              d: "medium",
+              t: "Что вернёт <code>null > 0</code>, <code>null == 0</code>, <code>null >= 0</code>?",
+              hint: "false, false, true — парадокс JS!",
+            },
+            {
+              d: "medium",
+              t: "Что вернёт <code>undefined > 0</code>, <code>undefined < 0</code>, <code>undefined == 0</code>?",
+              hint: "false, false, false — undefined → NaN при сравнении",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию-компаратор для сортировки массива по числам.",
+              hint: "(a, b) => a - b",
+            },
+            {
+              d: "medium",
+              t: "Чем отличается <code>Object.is(a, b)</code> от <code>===</code>?",
+              hint: "Object.is(NaN, NaN) = true, Object.is(0, -0) = false",
+            },
+            {
+              d: "medium",
+              t: 'Что вернёт <code>"abc" >= "abc"</code>?',
+              hint: "true — строки равны",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию <code>between(val, min, max)</code> — проверку вхождения в диапазон.",
+              hint: "return val >= min && val <= max",
+            },
+            {
+              d: "medium",
+              t: "Как работает сравнение <code>Symbol() == Symbol()</code>?",
+              hint: "false — каждый Symbol уникален",
+            },
+            {
+              d: "hard",
+              t: "Реализуй глубокое сравнение <code>deepEqual(a, b)</code> для объектов и массивов.",
+              hint: "Рекурсивно сравнивай все ключи через Object.keys",
+            },
+            {
+              d: "hard",
+              t: "Что такое SameValueZero? Как оно используется в Set и Map?",
+              hint: "Как Object.is но 0 === -0. Используется в поиске по коллекциям",
+            },
+            {
+              d: "hard",
+              t: "Объясни, как JS сравнивает объекты с примитивами через <code>==</code>.",
+              hint: "Объект приводится к примитиву через ToPrimitive (valueOf, toString)",
+            },
+            {
+              d: "hard",
+              t: "Что выведет <code>console.log([] == ![])</code>? Шаг за шагом.",
+              hint: 'true — ![] = false, [] == false → "" == 0 → 0 == 0',
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>sortStrings(arr)</code> с корректной локализованной сортировкой.",
+              hint: "arr.sort((a, b) => a.localeCompare(b))",
+            },
+            {
+              d: "hard",
+              t: "Как реализован <code>Array.prototype.includes</code> — использует == или ===?",
+              hint: "Использует SameValueZero — строгое, но NaN === NaN",
+            },
+            {
+              d: "hard",
+              t: 'Что вернёт <code>new String("a") == "a"</code>? А <code>new String("a") === "a"</code>?',
+              hint: "true и false — обёртка объект vs примитив",
+            },
+            {
+              d: "hard",
+              t: "Реализуй компаратор для сортировки объектов по нескольким полям.",
+              hint: "Возвращай 0 для первого поля, переходи ко второму",
+            },
+            {
+              d: "hard",
+              t: "Что такое Abstract Equality Comparison в спецификации JS?",
+              hint: "Алгоритм == в ECMA-262: последовательность правил приведения типов",
+            },
+            {
+              d: "hard",
+              t: 'Объясни почему <code>typeof null === "object"</code> — ошибка или фича?',
+              hint: "Исторический баг из первой версии JS. Хранится для обратной совместимости",
+            },
+            {
+              d: "hard",
+              t: "Напиши Proxy-ловушку которая логирует все сравнения с объектом.",
+              hint: "Используй trap для valueOf и [Symbol.toPrimitive]",
+            },
+            {
+              d: "hard",
+              t: 'Что такое NaN boxing? Почему <code>typeof NaN === "number"</code>?',
+              hint: "IEEE 754: NaN — специальное битовое представление в типе double",
+            },
+          ],
+        },
+        {
+          id: "conditions",
+          title: "Условное ветвление: if, ?",
+          icon: "🔀",
+          color: "#10b981",
+          tasks: [
+            {
+              d: "easy",
+              t: 'Напиши код: если число положительное — "positive", отрицательное — "negative", иначе "zero".',
+              hint: "if/else if/else",
+            },
+            {
+              d: "easy",
+              t: "Что такое тернарный оператор <code>?</code>? Перепиши if/else через него.",
+              hint: "условие ? значение_если_true : значение_если_false",
+            },
+            {
+              d: "easy",
+              t: 'Что выведет: <code>let x = 0; if(x) console.log("true"); else console.log("false");</code>?',
+              hint: '"false" — 0 это falsy значение',
+            },
+            {
+              d: "easy",
+              t: "Напиши if-else для проверки: является ли число чётным или нечётным.",
+              hint: "if(n % 2 === 0)",
+            },
+            {
+              d: "easy",
+              t: "Как работает <code>switch</code>? Перепиши цепочку if-else на switch для дней недели.",
+              hint: "switch(day) { case 1: ... break; ... }",
+            },
+            {
+              d: "easy",
+              t: "Что произойдёт в switch без <code>break</code>? (Fallthrough)",
+              hint: 'Выполнение "провалится" в следующий case',
+            },
+            {
+              d: "easy",
+              t: 'Напиши тернарный оператор: если возраст >= 18 — "adult", иначе — "minor".',
+              hint: 'age >= 18 ? "adult" : "minor"',
+            },
+            {
+              d: "easy",
+              t: "Что такое <code>default</code> в switch?",
+              hint: "Выполняется если ни один case не совпал, как else в if",
+            },
+            {
+              d: "easy",
+              t: "Можно ли использовать строки в switch? Напиши пример.",
+              hint: 'switch(str) { case "hello": ... }',
+            },
+            {
+              d: "easy",
+              t: "Можно ли вкладывать тернарные операторы друг в друга? Напиши пример с тремя вариантами.",
+              hint: 'a ? "a" : b ? "b" : "c" — но лучше избегать',
+            },
+            {
+              d: "medium",
+              t: 'Что выведет: <code>if ("0") console.log("true"); else console.log("false");</code>?',
+              hint: '"true" — непустая строка truthy, даже "0"',
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию <code>getGrade(score)</code> возвращающую оценку A-F по баллу.",
+              hint: "Используй if/else if или switch с ranges",
+            },
+            {
+              d: "medium",
+              t: "Как оптимально написать условие для проверки нескольких значений переменной?",
+              hint: "[1, 2, 3].includes(x) вместо x===1 || x===2 || x===3",
+            },
+            {
+              d: "medium",
+              t: 'Что выведет вложенный тернарник: <code>let x=5; let r = x>3 ? x>7 ? "big" : "medium" : "small";</code>?',
+              hint: '"medium" — 5>3 true, 5>7 false',
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию <code>fizzbuzz(n)</code> без использования if (только тернарный оператор).",
+              hint: 'n%15===0?"FizzBuzz":n%3===0?"Fizz":n%5===0?"Buzz":n',
+            },
+            {
+              d: "medium",
+              t: "Как использовать switch с диапазонами? Напиши пример.",
+              hint: "switch(true) { case x >= 90: ... }",
+            },
+            {
+              d: "medium",
+              t: 'Что такое "short-circuit evaluation"? Как <code>&&</code> и <code>||</code> используются вместо if?',
+              hint: "a && doSomething() — выполнится только если a truthy",
+            },
+            {
+              d: "medium",
+              t: "Перепиши сложную цепочку if-else-if в lookup объект (object lookup pattern).",
+              hint: "{key1: val1, key2: val2}[key] или Map",
+            },
+            {
+              d: "medium",
+              t: 'Напиши функцию <code>classify(n)</code>: "prime", "composite" или "neither" (для 1 и 0).',
+              hint: "Проверь на простоту + обработай edge cases",
+            },
+            {
+              d: "medium",
+              t: 'Что выведет код с fallthrough: <code>switch(2){ case 1: case 2: case 3: console.log("1-3"); break; }</code>?',
+              hint: '"1-3" — case 2 провалится в case 3 который провалится в console.log',
+            },
+            {
+              d: "hard",
+              t: 'Реализуй паттерн "guard clauses" — ранний выход из функции вместо глубокой вложенности if.',
+              hint: "if(!condition) return; вместо if(condition){ ... }",
+            },
+            {
+              d: "hard",
+              t: 'Что такое "стратегия" (strategy pattern) и как заменить if-else на функции в объекте?',
+              hint: "const strategies = { add: (a,b)=>a+b, sub: (a,b)=>a-b }; strategies[op](a,b)",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>match</code> в стиле pattern matching (как в Rust/Haskell).",
+              hint: "function match(val, cases) { return cases.find(([pred]) => pred(val))?.[1]?.(val) }",
+            },
+            {
+              d: "hard",
+              t: "Как использовать тернарный оператор для ленивых вычислений? Пример с функциями.",
+              hint: "condition ? () => expensiveA() : () => expensiveB()",
+            },
+            {
+              d: "hard",
+              t: "Реализуй конечный автомат (state machine) с помощью switch.",
+              hint: 'switch(state) { case "idle": ...; case "loading": ... }',
+            },
+            {
+              d: "hard",
+              t: "Что такое optional chaining <code>?.</code>? Как оно связано с условным ветвлением?",
+              hint: "obj?.prop вместо obj && obj.prop",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>pipe(...fns)</code> которая применяет функции последовательно с условием продолжения.",
+              hint: "fns.reduce((v, f) => v != null ? f(v) : v, initial)",
+            },
+            {
+              d: "hard",
+              t: "Что такое предикаты? Напиши библиотечку предикатов: isString, isNumber, isArray, isNull.",
+              hint: 'const isString = (x) => typeof x === "string"',
+            },
+            {
+              d: "hard",
+              t: "Реализуй функцию <code>cond(pairs)</code> в стиле Ramda: принимает массив [predicate, transformer].",
+              hint: "return (val) => pairs.find(([p]) => p(val))?.[1](val)",
+            },
+            {
+              d: "hard",
+              t: "Почему глубокая вложенность if — это code smell? Какие паттерны решают эту проблему?",
+              hint: "Early return, strategy pattern, polymorphism, flat structure",
+            },
+            {
+              d: "hard",
+              t: "Реализуй <code>when(predicate, transform)</code> — функцию высшего порядка применяющую transform только при условии.",
+              hint: "return (val) => predicate(val) ? transform(val) : val",
+            },
+            {
+              d: "hard",
+              t: "Напиши декларативный роутер используя объект-диспетчер вместо switch/if.",
+              hint: 'const routes = { "/home": HomeHandler, "/about": AboutHandler }; routes[path]?.()',
+            },
+          ],
+        },
+        {
+          id: "logical",
+          title: "Логические операторы",
+          icon: "🧠",
+          color: "#ec4899",
+          tasks: [
+            {
+              d: "easy",
+              t: "Что возвращает <code>&&</code>? Не true/false, а конкретное значение.",
+              hint: "Возвращает первый falsy операнд или последний если все truthy",
+            },
+            {
+              d: "easy",
+              t: "Что возвращает <code>||</code>? Не true/false, а конкретное значение.",
+              hint: "Возвращает первый truthy операнд или последний если все falsy",
+            },
+            {
+              d: "easy",
+              t: "Что вернёт <code>1 && 2 && 3</code>?",
+              hint: "3 — все truthy, возвращается последний",
+            },
+            {
+              d: "easy",
+              t: "Что вернёт <code>1 || 2 || 3</code>?",
+              hint: "1 — первый truthy",
+            },
+            {
+              d: "easy",
+              t: 'Что вернёт <code>0 && "hello"</code>?',
+              hint: "0 — первый falsy",
+            },
+            {
+              d: "easy",
+              t: 'Что вернёт <code>false || "default"</code>?',
+              hint: '"default" — false falsy, возвращает второй',
+            },
+            {
+              d: "easy",
+              t: "Что такое оператор <code>!</code>? Что вернёт <code>!true</code> и <code>!0</code>?",
+              hint: "false и true — логическое НЕ",
+            },
+            {
+              d: "easy",
+              t: "Что такое двойное отрицание <code>!!</code>? Зачем оно используется?",
+              hint: "Приводит значение к boolean: !!value === Boolean(value)",
+            },
+            {
+              d: "easy",
+              t: "Вычисли: <code>true && false || true</code>. Каков приоритет операторов?",
+              hint: "(true && false) || true = false || true = true. && выше ||",
+            },
+            {
+              d: "easy",
+              t: 'Что вернёт <code>null || undefined || 0 || "" || "hello"</code>?',
+              hint: '"hello" — первый truthy из цепочки',
+            },
+            {
+              d: "medium",
+              t: "Что вернёт <code>let x = 0; let y = x || 10;</code>? Какой паттерн это демонстрирует?",
+              hint: 'y = 10 — паттерн "default value" через ||',
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию с параметром по умолчанию через || без использования синтаксиса ES6 defaults.",
+              hint: 'function greet(name) { name = name || "World"; }',
+            },
+            {
+              d: "medium",
+              t: 'Что вернёт <code>"cat" && "dog"</code>? А <code>"cat" || "dog"</code>?',
+              hint: '"dog" и "cat"',
+            },
+            {
+              d: "medium",
+              t: "Как использовать <code>&&</code> для короткого вызова функции?",
+              hint: "user && user.login() — вызов только если user truthy",
+            },
+            {
+              d: "medium",
+              t: "Что выведет: <code>let a = 0; let b = a || (a = 5); console.log(a, b);</code>?",
+              hint: "5 и 5 — побочный эффект в операторе",
+            },
+            {
+              d: "medium",
+              t: "В чём проблема паттерна <code>val || default</code> для числа 0?",
+              hint: "0 falsy, поэтому используй ?? вместо ||",
+            },
+            {
+              d: "medium",
+              t: 'Что вернёт <code>!!"" </code>, <code>!!0</code>, <code>!!null</code>, <code>!!NaN</code>?',
+              hint: "false, false, false, false — все falsy → !!falsy = false",
+            },
+            {
+              d: "medium",
+              t: "Реализуй логику: выполнить callback только если он передан и является функцией.",
+              hint: 'callback && typeof callback === "function" && callback()',
+            },
+            {
+              d: "medium",
+              t: "Что такое приоритет логических операторов? Расставь скобки: <code>a || b && c</code>.",
+              hint: "a || (b && c) — && выше по приоритету чем ||",
+            },
+            {
+              d: "medium",
+              t: 'Что вернёт <code>true || console.log("hi")</code>? Выполнится ли console.log?',
+              hint: "true — из-за short-circuit console.log не выполнится",
+            },
+            {
+              d: "hard",
+              t: "Реализуй функцию <code>and(...fns)</code> — возвращает true только если все функции-предикаты true.",
+              hint: "return (val) => fns.every(fn => fn(val))",
+            },
+            {
+              d: "hard",
+              t: "Реализуй функцию <code>or(...fns)</code> — возвращает true если хотя бы одна функция true.",
+              hint: "return (val) => fns.some(fn => fn(val))",
+            },
+            {
+              d: "hard",
+              t: "Реализуй функцию <code>not(fn)</code> — инвертирует результат предиката.",
+              hint: "return (...args) => !fn(...args)",
+            },
+            {
+              d: "hard",
+              t: "Что такое XOR (исключающее ИЛИ) для булевых? Как реализовать в JS?",
+              hint: "!!(a ^ b) или (a || b) && !(a && b)",
+            },
+            {
+              d: "hard",
+              t: "Объясни как работает lazy evaluation в JS через &&/||. Почему это важно для производительности?",
+              hint: "Правая часть не вычисляется если результат уже известен по левой",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>compose(...fns)</code> с условием: если любая функция вернула null — прекратить цепочку.",
+              hint: "Используй reduce с проверкой на null",
+            },
+            {
+              d: "hard",
+              t: 'Реализуй "optional chaining" вручную через && для <code>a.b.c.d</code>.',
+              hint: "a && a.b && a.b.c && a.b.c.d",
+            },
+            {
+              d: "hard",
+              t: "Как логические операторы работают с Proxy? Перехватываются ли они?",
+              hint: "Нет прямых ловушек, но valueOf/get могут влиять через приведение типов",
+            },
+            {
+              d: "hard",
+              t: "Что такое логическое присваивание <code>&&=</code>, <code>||=</code>? В чём разница от обычного присваивания?",
+              hint: "a &&= b === if(a) a = b — присваивает только при условии",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>allTrue(arr)</code> без использования every().",
+              hint: "return arr.reduce((acc, val) => acc && Boolean(val), true)",
+            },
+            {
+              d: "hard",
+              t: 'Реализуй паттерн "Either" — функция возвращает правое значение при успехе, левое при ошибке. Используй логические операторы.',
+              hint: "[null, result] или [error, null] как Either монада",
+            },
+            {
+              d: "hard",
+              t: "Что такое De Morgan laws для программирования? Напиши примеры трансформаций.",
+              hint: "!(a && b) === !a || !b; !(a || b) === !a && !b",
+            },
+          ],
+        },
+        {
+          id: "nullish",
+          title: "Операторы ??, ??=",
+          icon: "🎯",
+          color: "#ef4444",
+          tasks: [
+            {
+              d: "easy",
+              t: "Что такое оператор нулевого слияния <code>??</code>? Чем отличается от <code>||</code>?",
+              hint: "?? реагирует только на null/undefined, || на все falsy",
+            },
+            {
+              d: "easy",
+              t: 'Что вернёт <code>null ?? "default"</code>? А <code>undefined ?? "default"</code>?',
+              hint: '"default" в обоих случаях',
+            },
+            {
+              d: "easy",
+              t: 'Что вернёт <code>0 ?? "default"</code>? А <code>0 || "default"</code>?',
+              hint: '0 и "default" — ключевое отличие',
+            },
+            {
+              d: "easy",
+              t: 'Что вернёт <code>"" ?? "default"</code>? А <code>"" || "default"</code>?',
+              hint: '"" и "default"',
+            },
+            {
+              d: "easy",
+              t: 'Что вернёт <code>false ?? "default"</code>?',
+              hint: "false — ?? только про null/undefined",
+            },
+            {
+              d: "easy",
+              t: 'Что вернёт <code>NaN ?? "default"</code>?',
+              hint: "NaN — NaN не null и не undefined",
+            },
+            {
+              d: "easy",
+              t: "Что такое <code>??=</code> (Nullish Assignment)? Когда он присваивает?",
+              hint: "Присваивает только если переменная null или undefined",
+            },
+            {
+              d: "easy",
+              t: "Что произойдёт: <code>let x = null; x ??= 42; console.log(x);</code>?",
+              hint: "42 — x был null, присваивается",
+            },
+            {
+              d: "easy",
+              t: "Что произойдёт: <code>let x = 0; x ??= 42; console.log(x);</code>?",
+              hint: "0 — x не null/undefined, не меняется",
+            },
+            {
+              d: "easy",
+              t: "Как использовать <code>??</code> для значения по умолчанию при деструктуризации?",
+              hint: 'const { name = null } = obj; const safeName = name ?? "Unknown";',
+            },
+            {
+              d: "medium",
+              t: "В чём практическая разница: когда использовать ?? вместо || для параметров функции?",
+              hint: 'Когда 0 или "" — валидные значения (например count, username)',
+            },
+            {
+              d: "medium",
+              t: 'Что вернёт цепочка: <code>null ?? undefined ?? 0 ?? "hello"</code>?',
+              hint: "0 — первое не-null/undefined значение",
+            },
+            {
+              d: "medium",
+              t: "Можно ли смешивать <code>??</code> с <code>&&</code> и <code>||</code> без скобок? Что будет?",
+              hint: "SyntaxError! JS требует явных скобок: (a ?? b) || c",
+            },
+            {
+              d: "medium",
+              t: 'Что делает optional chaining с ??: <code>user?.name ?? "Anonymous"</code>?',
+              hint: 'Если user null/undefined — вернёт "Anonymous", иначе user.name или "Anonymous"',
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию конфигурации: <code>configure(options)</code> где все поля опциональны с дефолтами через ??.",
+              hint: "const debug = options.debug ?? false; const timeout = options.timeout ?? 5000;",
+            },
+            {
+              d: "medium",
+              t: "Чем отличается <code>||=</code> от <code>??=</code>? Когда каждый уместен?",
+              hint: "||= присваивает при любом falsy, ??= только при null/undefined",
+            },
+            {
+              d: "medium",
+              t: "Что произойдёт: <code>let count = 0; count ||= 10; console.log(count);</code>?",
+              hint: "10 — 0 falsy, ||= присваивает",
+            },
+            {
+              d: "medium",
+              t: "Что произойдёт: <code>let count = 0; count ??= 10; console.log(count);</code>?",
+              hint: "0 — 0 не null/undefined, ??= не присваивает",
+            },
+            {
+              d: "medium",
+              t: "Как использовать <code>??=</code> для ленивой инициализации (lazy init) свойства объекта?",
+              hint: "obj.cache ??= expensiveComputation()",
+            },
+            {
+              d: "medium",
+              t: 'Что выведет: <code>let obj = {}; obj.a ??= "set"; obj.a ??= "again"; console.log(obj.a);</code>?',
+              hint: '"set" — после первого ??= значение "set", второй уже не меняет',
+            },
+            {
+              d: "hard",
+              t: "Реализуй полифил для <code>??</code> используя ES5.",
+              hint: "function nullish(a, b) { return a !== null && a !== undefined ? a : b; }",
+            },
+            {
+              d: "hard",
+              t: "Как <code>??</code> работает с Proxy? Какая ловушка задействована?",
+              hint: "Proxy перехватывает get/has, ?? проверяет === null || === undefined",
+            },
+            {
+              d: "hard",
+              t: "Реализуй функцию <code>getDeep(obj, path, defaultVal)</code> используя ?? и optional chaining.",
+              hint: 'path.split(".").reduce((acc, k) => acc?.[k], obj) ?? defaultVal',
+            },
+            {
+              d: "hard",
+              t: "Что произойдёт если использовать <code>??</code> с геттером возвращающим undefined?",
+              hint: "Геттер вернёт undefined, ?? применит правую часть",
+            },
+            {
+              d: "hard",
+              t: "Реализуй <code>deepMerge(defaults, options)</code> используя ??.",
+              hint: "Рекурсивно для объектов, ?? для примитивов",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>coalesce(...vals)</code> — возвращает первое не-null/undefined значение.",
+              hint: "return vals.find(v => v !== null && v !== undefined)",
+            },
+            {
+              d: "hard",
+              t: "В чём разница между <code>a?.b ?? c</code> и <code>(a?.b) ?? c</code>? Одинаковы ли они?",
+              hint: "Да, одинаковы — optional chaining связывает плотнее",
+            },
+            {
+              d: "hard",
+              t: "Как <code>??=</code> полезен в мемоизации? Напиши пример кэширующей функции.",
+              hint: "cache[key] ??= computeExpensive(key); return cache[key];",
+            },
+            {
+              d: "hard",
+              t: 'Объясни почему <code>??</code> называется "nullish coalescing" а не "falsy coalescing".',
+              hint: 'Coalesce — слиться, объединить. Реагирует только на "нулевые" (nullish) значения',
+            },
+            {
+              d: "hard",
+              t: 'Что вернёт <code>0 || null ?? "x"</code>? Почему это SyntaxError?',
+              hint: 'Нельзя смешивать без скобок: (0 || null) ?? "x" = null ?? "x" = "x"',
+            },
+            {
+              d: "hard",
+              t: "Реализуй конфигурируемый объект с цепочкой источников данных (env → config → defaults) используя ??.",
+              hint: "const val = env.KEY ?? config.key ?? defaults.key",
+            },
+            {
+              d: "hard",
+              t: "Создай хелпер <code>withDefault(obj, defaults)</code> возвращающий Proxy который отдаёт defaults[key] при null/undefined.",
+              hint: "handler.get = (target, key) => target[key] ?? defaults[key]",
+            },
+          ],
+        },
+      ];
+
+      // --- State ---
+      let done = JSON.parse(localStorage.getItem("jsTasks_done") || "{}");
+      let currentFilter = "all";
+      let searchQuery = "";
+
+      // --- Render ---
+      function renderAll() {
+        const root = document.getElementById("tasksRoot");
+        root.innerHTML = "";
+
+        let easyC = 0,
+          medC = 0,
+          hardC = 0;
+        TOPICS.forEach((t) =>
+          t.tasks.forEach((tk) => {
+            if (tk.d === "easy") easyC++;
+            if (tk.d === "medium") medC++;
+            if (tk.d === "hard") hardC++;
+          }),
+        );
+        document.getElementById("easyCount").textContent = easyC;
+        document.getElementById("medCount").textContent = medC;
+        document.getElementById("hardCount").textContent = hardC;
+
+        let taskNum = 0;
+        TOPICS.forEach((topic) => {
+          const sec = document.createElement("section");
+          sec.className = "topic-section";
+          sec.dataset.topicId = topic.id;
+
+          const header = document.createElement("div");
+          header.className = "topic-header";
+          header.innerHTML = `
+      <div class="topic-icon" style="background:${topic.color}22;color:${topic.color}">${topic.icon}</div>
+      <span class="topic-title">${topic.title}</span>
+      <span class="topic-count">${topic.tasks.length} заданий</span>
+    `;
+          sec.appendChild(header);
+
+          const grid = document.createElement("div");
+          grid.className = "task-grid";
+
+          topic.tasks.forEach((task, i) => {
+            taskNum++;
+            const id = `${topic.id}_${i}`;
+            const card = document.createElement("div");
+            card.className = `task-card${done[id] ? " done" : ""}`;
+            card.style.setProperty("--card-color", topic.color);
+            card.dataset.id = id;
+            card.dataset.diff = task.d;
+            card.dataset.done = done[id] ? "1" : "0";
+            card.dataset.text = task.t.toLowerCase();
+
+            const diffLabel = {
+              easy: "Лёгкое",
+              medium: "Среднее",
+              hard: "Сложное",
+            }[task.d];
+            const diffClass = {
+              easy: "diff-easy",
+              medium: "diff-medium",
+              hard: "diff-hard",
+            }[task.d];
+
+            card.innerHTML = `
+        <div class="task-top">
+          <span class="task-num">#${String(taskNum).padStart(3, "0")}</span>
+          <span class="difficulty ${diffClass}">${diffLabel}</span>
+        </div>
+        <div class="task-text">${task.t}</div>
+        <div class="task-actions">
+          <button class="btn-done" onclick="toggleDone('${id}', this)">
+            ${done[id] ? "✅ Сделано" : "○ Выполнено"}
+          </button>
+          <button class="btn-hint" onclick="toggleHint(this)">💡 Подсказка</button>
+        </div>
+        <div class="hint-box">${task.hint}</div>
+      `;
+            grid.appendChild(card);
+          });
+
+          sec.appendChild(grid);
+          root.appendChild(sec);
+        });
+
+        updateProgress();
+        applyFilter();
+      }
+
+      function toggleDone(id, btn) {
+        done[id] = !done[id];
+        localStorage.setItem("jsTasks_done", JSON.stringify(done));
+        const card = btn.closest(".task-card");
+        card.classList.toggle("done", done[id]);
+        card.dataset.done = done[id] ? "1" : "0";
+        btn.innerHTML = done[id] ? "✅ Сделано" : "○ Выполнено";
+        updateProgress();
+      }
+
+      function toggleHint(btn) {
+        const hintBox = btn.closest(".task-card").querySelector(".hint-box");
+        hintBox.classList.toggle("show");
+        btn.textContent = hintBox.classList.contains("show")
+          ? "🙈 Скрыть"
+          : "💡 Подсказка";
+      }
+
+      function updateProgress() {
+        const total = 200;
+        const doneCount = Object.values(done).filter(Boolean).length;
+        const pct = ((doneCount / total) * 100).toFixed(1);
+        document.getElementById("progressBar").style.width = pct + "%";
+        document.getElementById("progressText").textContent =
+          `${doneCount} / ${total}`;
+        document.getElementById("floatCounter").textContent =
+          `✅ ${doneCount} / ${total}`;
+      }
+
+      function setFilter(filter, btn) {
+        currentFilter = filter;
+        document
+          .querySelectorAll(".filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        applyFilter();
+      }
+
+      function filterTasks() {
+        searchQuery = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        applyFilter();
+      }
+
+      function applyFilter() {
+        document.querySelectorAll(".task-card").forEach((card) => {
+          const diff = card.dataset.diff;
+          const isDone = card.dataset.done === "1";
+          const text = card.dataset.text;
+          let show = true;
+          if (currentFilter === "easy") show = diff === "easy";
+          else if (currentFilter === "medium") show = diff === "medium";
+          else if (currentFilter === "hard") show = diff === "hard";
+          else if (currentFilter === "done") show = isDone;
+          else if (currentFilter === "undone") show = !isDone;
+          if (searchQuery && !text.includes(searchQuery)) show = false;
+          card.classList.toggle("hidden", !show);
+        });
+
+        // Hide empty sections
+        document.querySelectorAll(".topic-section").forEach((sec) => {
+          const visible = [...sec.querySelectorAll(".task-card")].some(
+            (c) => !c.classList.contains("hidden"),
+          );
+          sec.classList.toggle("hidden", !visible);
+        });
+      }
+
+      function resetAll() {
+        if (confirm("Сбросить весь прогресс?")) {
+          done = {};
+          localStorage.removeItem("jsTasks_done");
+          renderAll();
+        }
+      }
+
+      renderAll();
+    </script>
+  </body>
+</html>
