@@ -1,0 +1,1157 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS Tasks — Качество кода</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap");
+
+      :root {
+        --bg: #0a0a0f;
+        --surface: #13131a;
+        --card: #1a1a25;
+        --border: #2a2a3d;
+        --accent: #f97316;
+        --accent2: #facc15;
+        --accent3: #4ade80;
+        --accent4: #38bdf8;
+        --accent5: #ef4444;
+        --accent6: #c084fc;
+        --text: #e2e8f0;
+        --muted: #64748b;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background:
+          radial-gradient(
+            ellipse at 10% 30%,
+            rgba(249, 115, 22, 0.08) 0%,
+            transparent 45%
+          ),
+          radial-gradient(
+            ellipse at 90% 70%,
+            rgba(250, 204, 21, 0.06) 0%,
+            transparent 45%
+          ),
+          radial-gradient(
+            ellipse at 55% 10%,
+            rgba(192, 132, 252, 0.05) 0%,
+            transparent 40%
+          );
+        animation: bgPulse 22s ease-in-out infinite alternate;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      @keyframes bgPulse {
+        0% {
+          transform: translate(0, 0) scale(1);
+        }
+        100% {
+          transform: translate(1%, 2%) scale(1.02);
+        }
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* ── HEADER ── */
+      header {
+        padding: 64px 20px 44px;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: linear-gradient(135deg, #f97316, #facc15);
+        color: #0a0a0f;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 2.5px;
+        text-transform: uppercase;
+        padding: 7px 18px;
+        border-radius: 20px;
+        margin-bottom: 22px;
+      }
+
+      h1 {
+        font-size: clamp(2.4rem, 6vw, 4.8rem);
+        font-weight: 900;
+        line-height: 1.08;
+        background: linear-gradient(135deg, #fff 0%, #f97316 40%, #facc15 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 14px;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 1.05rem;
+        margin-bottom: 44px;
+        line-height: 1.6;
+      }
+
+      /* ── STATS ── */
+      .stats {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 48px;
+      }
+
+      .stat-chip {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 11px 18px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 0.88rem;
+      }
+
+      .stat-chip .num {
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--accent);
+      }
+
+      /* ── PROGRESS ── */
+      .progress-wrap {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 18px 24px;
+        margin-bottom: 36px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+
+      .progress-label {
+        font-weight: 600;
+        font-size: 0.93rem;
+        white-space: nowrap;
+      }
+      .progress-bar-outer {
+        flex: 1;
+        min-width: 180px;
+        height: 8px;
+        background: var(--border);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .progress-bar-inner {
+        height: 100%;
+        background: linear-gradient(90deg, #f97316, #facc15);
+        border-radius: 4px;
+        transition: width 0.4s ease;
+      }
+      .progress-count {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.88rem;
+        color: var(--accent);
+        white-space: nowrap;
+      }
+
+      .btn-reset {
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 9px 15px;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .btn-reset:hover {
+        border-color: var(--accent5);
+        color: var(--accent5);
+      }
+
+      /* ── CONTROLS ── */
+      .controls {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 44px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .search-wrap {
+        flex: 1;
+        min-width: 240px;
+        position: relative;
+      }
+
+      .search-wrap input {
+        width: 100%;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 11px 16px 11px 42px;
+        color: var(--text);
+        font-family: "Inter", sans-serif;
+        font-size: 0.93rem;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .search-wrap input:focus {
+        border-color: var(--accent);
+      }
+      .search-wrap::before {
+        content: "🔍";
+        position: absolute;
+        left: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      .filter-btn {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 9px 15px;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .filter-btn:hover,
+      .filter-btn.active {
+        border-color: var(--accent);
+        color: #fff;
+        background: rgba(249, 115, 22, 0.15);
+      }
+
+      /* ── TOPIC SECTION ── */
+      .topic-section {
+        margin-bottom: 64px;
+      }
+
+      .topic-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 22px;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        background: var(--bg);
+        z-index: 10;
+      }
+
+      .topic-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+      }
+
+      .topic-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+      }
+
+      .topic-meta {
+        margin-left: auto;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-shrink: 0;
+      }
+
+      .topic-count {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.78rem;
+        color: var(--muted);
+        background: var(--surface);
+        padding: 4px 11px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+      }
+
+      /* ── GRID ── */
+      .task-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 14px;
+      }
+
+      /* ── CARD ── */
+      .task-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        transition: all 0.22s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .task-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 16px;
+        background: radial-gradient(
+          circle at 50% 0%,
+          var(--card-glow, rgba(249, 115, 22, 0.06)) 0%,
+          transparent 70%
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+        pointer-events: none;
+      }
+
+      .task-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          var(--card-color, #f97316),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.22s;
+      }
+
+      .task-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 36px rgba(0, 0, 0, 0.32);
+      }
+      .task-card:hover::before,
+      .task-card:hover::after {
+        opacity: 1;
+      }
+
+      .task-card.done {
+        background: rgba(74, 222, 128, 0.06);
+        border-color: rgba(74, 222, 128, 0.28);
+      }
+      .task-card.done::before {
+        opacity: 1;
+        background: linear-gradient(90deg, #4ade80, transparent);
+      }
+
+      .task-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 13px;
+      }
+
+      .task-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.73rem;
+        color: var(--muted);
+        background: var(--surface);
+        padding: 3px 8px;
+        border-radius: 6px;
+      }
+
+      .difficulty {
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        padding: 3px 10px;
+        border-radius: 20px;
+      }
+      .diff-easy {
+        background: rgba(74, 222, 128, 0.13);
+        color: #4ade80;
+      }
+      .diff-medium {
+        background: rgba(250, 204, 21, 0.13);
+        color: #facc15;
+      }
+      .diff-hard {
+        background: rgba(239, 68, 68, 0.13);
+        color: #ef4444;
+      }
+
+      .task-text {
+        font-size: 0.92rem;
+        line-height: 1.68;
+        color: var(--text);
+        margin-bottom: 14px;
+      }
+
+      .task-text code {
+        font-family: "JetBrains Mono", monospace;
+        background: var(--surface);
+        color: #f97316;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 0.84em;
+      }
+
+      .code-block {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.77rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px 14px;
+        color: #94a3b8;
+        margin-bottom: 14px;
+        white-space: pre;
+        overflow-x: auto;
+        line-height: 1.65;
+      }
+
+      .task-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 6px;
+      }
+
+      .btn-done {
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 7px 15px;
+        color: var(--muted);
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        font-size: 0.79rem;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+      .btn-done:hover {
+        border-color: #4ade80;
+        color: #4ade80;
+      }
+      .task-card.done .btn-done {
+        background: rgba(74, 222, 128, 0.1);
+        border-color: #4ade80;
+        color: #4ade80;
+      }
+
+      /* ── FLOAT ── */
+      .float-counter {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        background: linear-gradient(135deg, #f97316, #facc15);
+        border-radius: 20px;
+        padding: 13px 22px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #0a0a0f;
+        box-shadow: 0 8px 32px rgba(249, 115, 22, 0.45);
+        z-index: 100;
+        transition: transform 0.2s;
+      }
+      .float-counter:hover {
+        transform: scale(1.06);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--accent);
+      }
+
+      @media (max-width: 640px) {
+        .task-grid {
+          grid-template-columns: 1fr;
+        }
+        h1 {
+          font-size: 2.3rem;
+        }
+        .float-counter {
+          bottom: 14px;
+          right: 14px;
+          padding: 10px 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="badge">✦ JavaScript Practice</div>
+      <h1>100 заданий<br />Качество кода</h1>
+      <p class="subtitle">
+        Отладка · Стиль · Комментарии · Ниндзя-код · Mocha · Полифилы
+      </p>
+      <div class="stats">
+        <div class="stat-chip"><span class="num">100</span>&nbsp;заданий</div>
+        <div class="stat-chip"><span class="num">7</span>&nbsp;тем</div>
+        <div class="stat-chip">
+          <span class="num" id="easyCount">0</span>&nbsp;лёгких
+        </div>
+        <div class="stat-chip">
+          <span class="num" id="medCount">0</span>&nbsp;средних
+        </div>
+        <div class="stat-chip">
+          <span class="num" id="hardCount">0</span>&nbsp;сложных
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="progress-wrap">
+        <span class="progress-label">⚡ Прогресс</span>
+        <div class="progress-bar-outer">
+          <div
+            class="progress-bar-inner"
+            id="progressBar"
+            style="width: 0%"
+          ></div>
+        </div>
+        <span class="progress-count" id="progressText">0 / 100</span>
+        <button class="btn-reset" onclick="resetAll()">Сбросить</button>
+      </div>
+
+      <div class="controls">
+        <div class="search-wrap">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Поиск задания..."
+            oninput="filterTasks()"
+          />
+        </div>
+        <button class="filter-btn active" onclick="setFilter('all', this)">
+          Все
+        </button>
+        <button class="filter-btn" onclick="setFilter('easy', this)">
+          Лёгкие
+        </button>
+        <button class="filter-btn" onclick="setFilter('medium', this)">
+          Средние
+        </button>
+        <button class="filter-btn" onclick="setFilter('hard', this)">
+          Сложные
+        </button>
+        <button class="filter-btn" onclick="setFilter('done', this)">
+          Выполненные
+        </button>
+        <button class="filter-btn" onclick="setFilter('undone', this)">
+          Невыполненные
+        </button>
+      </div>
+
+      <div id="tasksRoot"></div>
+    </div>
+
+    <div class="float-counter" id="floatCounter">✅ 0 / 100</div>
+
+    <script>
+      const TOPICS = [
+        {
+          id: "debug",
+          title: "Отладка в браузере",
+          icon: "🐛",
+          color: "#38bdf8",
+          tasks: [
+            {
+              d: "easy",
+              t: "Что такое DevTools? Как открыть вкладку Sources в Chrome?",
+            },
+            {
+              d: "easy",
+              t: "Что делает оператор <code>debugger</code>? Когда он полезен?",
+            },
+            {
+              d: "easy",
+              t: "Как поставить breakpoint на строку кода в DevTools? Что происходит при остановке?",
+            },
+            {
+              d: "easy",
+              t: "Чем отличаются кнопки Step Over, Step Into и Step Out при пошаговой отладке?",
+            },
+            {
+              d: "easy",
+              t: "Как посмотреть значение переменной при остановке на breakpoint?",
+            },
+            {
+              d: "easy",
+              t: "Что такое Watch-выражения в DevTools? Как добавить переменную в Watch?",
+            },
+            {
+              d: "medium",
+              t: "Что такое conditional breakpoint? Как поставить breakpoint срабатывающий только при <code>i > 5</code>?",
+            },
+            {
+              d: "medium",
+              t: "Как использовать вкладку Console для выполнения JS-кода в контексте страницы?",
+            },
+            {
+              d: "medium",
+              t: "Что такое Call Stack в DevTools? Как по нему понять последовательность вызовов?",
+            },
+            {
+              d: "medium",
+              t: "Как использовать <code>console.table()</code> для удобного вывода массива объектов?",
+            },
+            {
+              d: "medium",
+              t: "Что такое logpoint в DevTools? Чем он лучше временного <code>console.log</code>?",
+            },
+            {
+              d: "medium",
+              t: "Как отлаживать асинхронный код (async/await) в DevTools? Где смотреть асинхронный стек?",
+            },
+            {
+              d: "hard",
+              t: "Что такое blackboxing в DevTools? Как добавить библиотеку в blackbox и зачем?",
+            },
+            {
+              d: "hard",
+              t: "Как использовать Performance-вкладку для поиска медленных функций? Что такое flame graph?",
+            },
+            {
+              d: "hard",
+              t: "Как отладить утечку памяти с помощью Memory-вкладки DevTools? Что такое Heap Snapshot?",
+            },
+          ],
+        },
+        {
+          id: "style",
+          title: "Советы по стилю кода",
+          icon: "✨",
+          color: "#f97316",
+          tasks: [
+            {
+              d: "easy",
+              t: "Что такое code style? Зачем нужны единые соглашения в команде?",
+            },
+            {
+              d: "easy",
+              t: "Чем отличается camelCase от snake_case и PascalCase? Когда применяется каждый в JS?",
+            },
+            {
+              d: "easy",
+              t: "Что такое ESLint? Как он помогает соблюдать стиль кода?",
+            },
+            {
+              d: "easy",
+              t: "Что такое Prettier? Чем он отличается от ESLint?",
+            },
+            {
+              d: "easy",
+              t: "Почему важно ограничивать длину строки кода? Какой стандарт чаще всего используют?",
+            },
+            {
+              d: "easy",
+              t: "Что такое EditorConfig? Напиши минимальный <code>.editorconfig</code> для JS-проекта.",
+            },
+            {
+              d: "medium",
+              t: 'Что такое принцип "один уровень абстракции на функцию"? Приведи пример нарушения и исправления.',
+            },
+            {
+              d: "medium",
+              t: 'Что такое "магические числа" (magic numbers) в коде? Как от них избавиться?',
+            },
+            {
+              d: "medium",
+              t: "Что такое принцип DRY (Don't Repeat Yourself)? Приведи пример его применения.",
+            },
+            {
+              d: "medium",
+              t: "Что такое принцип KISS (Keep It Simple, Stupid)? Как он влияет на написание функций?",
+            },
+            {
+              d: "medium",
+              t: "Почему глубокая вложенность кода — это проблема? Как её уменьшить?",
+            },
+            {
+              d: "medium",
+              t: "Как правильно именовать булевы переменные? Приведи примеры хороших и плохих имён.",
+            },
+            {
+              d: "hard",
+              t: "Что такое линтер-правило <code>no-shadow</code>? Почему shadowing переменных опасен?",
+            },
+            {
+              d: "hard",
+              t: 'Что такое принцип "early return" и как он улучшает читаемость функций? Напиши пример рефакторинга.',
+            },
+            {
+              d: "hard",
+              t: "Как настроить ESLint + Prettier + husky + lint-staged для автоматической проверки кода перед коммитом?",
+            },
+          ],
+        },
+        {
+          id: "comments",
+          title: "Комментарии",
+          icon: "💬",
+          color: "#c084fc",
+          tasks: [
+            {
+              d: "easy",
+              t: "Чем однострочный комментарий <code>//</code> отличается от многострочного <code>/* */</code>?",
+            },
+            {
+              d: "easy",
+              t: "Что такое JSDoc? Напиши JSDoc-комментарий для функции <code>sum(a, b)</code>.",
+            },
+            {
+              d: "easy",
+              t: "Что означают теги <code>@param</code> и <code>@returns</code> в JSDoc?",
+            },
+            {
+              d: "easy",
+              t: 'Когда комментарий "почему" важнее комментария "что"? Приведи пример.',
+            },
+            {
+              d: "easy",
+              t: "Что такое TODO-комментарий? Как принято их форматировать?",
+            },
+            {
+              d: "medium",
+              t: "Почему комментирование очевидного кода считается плохой практикой? Приведи пример.",
+            },
+            {
+              d: "medium",
+              t: 'Что такое "self-documenting code"? Перепиши плохо именованный код с комментариями в читаемый без них.',
+            },
+            {
+              d: "medium",
+              t: "Что такое теги <code>@deprecated</code>, <code>@throws</code>, <code>@example</code> в JSDoc? Напиши пример их использования.",
+            },
+            {
+              d: "medium",
+              t: 'Как комментарии помогают при code review? Что такое "commenting contract"?',
+            },
+            {
+              d: "hard",
+              t: "Как настроить автогенерацию документации из JSDoc-комментариев (например через JSDoc 3 или TypeDoc)?",
+            },
+            {
+              d: "hard",
+              t: 'Что такое "literate programming"? Как идея влияет на современные практики написания комментариев?',
+            },
+          ],
+        },
+        {
+          id: "ninja",
+          title: "Ниндзя-код",
+          icon: "🥷",
+          color: "#ef4444",
+          tasks: [
+            {
+              d: "easy",
+              t: 'Что такое "ниндзя-код"? Почему намеренно запутанный код — это проблема для команды?',
+            },
+            {
+              d: "easy",
+              t: "Что плохого в однобуквенных именах переменных вроде <code>x</code>, <code>t</code>, <code>d</code>? Когда они допустимы?",
+            },
+            {
+              d: "easy",
+              t: "Что такое сокращение имён переменных как анти-паттерн? Приведи пример <code>brsr</code> вместо <code>browser</code>.",
+            },
+            {
+              d: "easy",
+              t: "Почему переиспользование одной переменной для разных целей — плохая практика?",
+            },
+            {
+              d: "easy",
+              t: 'Что такое "умные" однострочники? Почему краткость не всегда = качество?',
+            },
+            {
+              d: "medium",
+              t: 'Что такое "подчёркивание ради подчёркивания"? Когда префикс <code>_</code> несёт смысл, а когда нет?',
+            },
+            {
+              d: "medium",
+              t: "Почему добавление новых свойств к встроенным прототипам (<code>Array.prototype.myMethod</code>) опасно?",
+            },
+            {
+              d: "medium",
+              t: 'Что такое "побочные эффекты в условиях" как ниндзя-трюк? Приведи пример и объясни проблему.',
+            },
+            {
+              d: "medium",
+              t: "Почему возврат разных типов из одной функции — это ниндзя-приём? Что следует делать вместо этого?",
+            },
+            {
+              d: "hard",
+              t: 'Найди и объясни все "ниндзя-проблемы" в коде:\n<code>function f(a,b,c,d){return a?b?c:d:b}</code>',
+            },
+            {
+              d: "hard",
+              t: 'Что такое "обфускация" кода? Чем она отличается от минификации? Когда обфускация оправдана?',
+            },
+          ],
+        },
+        {
+          id: "mocha",
+          title: "Автотестирование с Mocha",
+          icon: "☕",
+          color: "#4ade80",
+          tasks: [
+            {
+              d: "easy",
+              t: "Что такое автоматическое тестирование? Зачем оно нужно?",
+            },
+            { d: "easy", t: "Что такое Mocha? Чем он отличается от Jest?" },
+            {
+              d: "easy",
+              t: "Что такое <code>describe</code> и <code>it</code> в Mocha? Напиши минимальный тест.",
+            },
+            {
+              d: "easy",
+              t: "Что такое <code>assert.equal</code> и <code>assert.strictEqual</code>? В чём разница?",
+            },
+            {
+              d: "easy",
+              t: "Что такое библиотека Chai? Как подключить её к Mocha?",
+            },
+            {
+              d: "easy",
+              t: "Напиши тест для функции <code>sum(a, b)</code> используя <code>expect(sum(2,3)).to.equal(5)</code>.",
+            },
+            {
+              d: "easy",
+              t: "Что такое BDD-стиль тестирования? Что означает <code>describe / it / expect</code>?",
+            },
+            {
+              d: "easy",
+              t: "Что такое <code>before</code>, <code>after</code>, <code>beforeEach</code>, <code>afterEach</code> хуки в Mocha?",
+            },
+            {
+              d: "medium",
+              t: "Что такое TDD (Test Driven Development)? Опиши цикл Red → Green → Refactor.",
+            },
+            {
+              d: "medium",
+              t: "Напиши набор тестов для функции <code>factorial(n)</code> покрывающий edge cases: 0, 1, отрицательное.",
+            },
+            {
+              d: "medium",
+              t: "Что такое test coverage? Как измерить покрытие кода тестами (например через nyc/istanbul)?",
+            },
+            {
+              d: "medium",
+              t: "Что такое stub и mock? Чем они отличаются? Приведи пример с Sinon.js.",
+            },
+            {
+              d: "medium",
+              t: "Как тестировать асинхронный код в Mocha? Покажи вариант с callback и с Promise.",
+            },
+            {
+              d: "medium",
+              t: "Что такое <code>it.only</code> и <code>it.skip</code>? Когда их применяют?",
+            },
+            {
+              d: "medium",
+              t: "Напиши тест проверяющий что функция бросает ошибку при неверном аргументе.",
+            },
+            {
+              d: "medium",
+              t: "Что такое test suite? Как организовать тесты в файлы и папки для большого проекта?",
+            },
+            {
+              d: "hard",
+              t: "Что такое snapshot testing? Как оно работает и в чём его ограничения?",
+            },
+            {
+              d: "hard",
+              t: "Как тестировать функции с побочными эффектами (запросы к API, запись в БД)? Что такое dependency injection в контексте тестов?",
+            },
+            {
+              d: "hard",
+              t: "Что такое property-based testing? Как использовать fast-check с Mocha для генерации тестовых данных?",
+            },
+            {
+              d: "hard",
+              t: "Как настроить CI/CD pipeline (например GitHub Actions) для автоматического запуска Mocha-тестов на каждый push?",
+            },
+          ],
+        },
+        {
+          id: "polyfills",
+          title: "Полифилы",
+          icon: "🔧",
+          color: "#facc15",
+          tasks: [
+            { d: "easy", t: "Что такое полифил (polyfill)? Зачем он нужен?" },
+            {
+              d: "easy",
+              t: "Чем полифил отличается от транспайлера (например Babel)?",
+            },
+            {
+              d: "easy",
+              t: "Что такое feature detection? Как проверить поддерживает ли браузер метод перед его использованием?",
+            },
+            {
+              d: "easy",
+              t: "Напиши полифил для <code>Array.prototype.includes</code>.",
+            },
+            {
+              d: "easy",
+              t: "Что такое core-js? Как подключить нужные полифилы через него?",
+            },
+            {
+              d: "easy",
+              t: "Что такое <code>@babel/preset-env</code> и как он связан с полифилами?",
+            },
+            {
+              d: "medium",
+              t: "Напиши полифил для <code>Array.prototype.flat</code> (один уровень вложенности).",
+            },
+            {
+              d: "medium",
+              t: "Напиши полифил для <code>Object.assign</code>.",
+            },
+            {
+              d: "medium",
+              t: "Что такое <code>browserslist</code>? Как он используется вместе с Babel и core-js для выбора нужных полифилов?",
+            },
+            {
+              d: "medium",
+              t: "Напиши полифил для <code>Promise</code> — опиши какие методы нужно реализовать и в каком порядке.",
+            },
+            {
+              d: "medium",
+              t: 'Что такое "useBuiltIns: usage" в Babel? Как это влияет на автоматическое добавление полифилов?',
+            },
+            {
+              d: "medium",
+              t: "Чем полифил отличается от шима (shim)? Приведи пример каждого.",
+            },
+            {
+              d: "hard",
+              t: "Напиши полифил для <code>Array.prototype.flatMap</code>.",
+            },
+            {
+              d: "hard",
+              t: "Напиши полифил для <code>globalThis</code> работающий в браузере, Node.js и Web Worker.",
+            },
+            {
+              d: "hard",
+              t: 'Как правильно добавить полифил не загрязняя глобальный скоп? Что такое "scoped polyfill"?',
+            },
+          ],
+        },
+      ];
+
+      const STORAGE_KEY = "jsTasks4_done";
+      let done = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      let currentFilter = "all";
+      let searchQuery = "";
+      const TOTAL = 100;
+
+      function renderAll() {
+        const root = document.getElementById("tasksRoot");
+        root.innerHTML = "";
+
+        let easy = 0,
+          med = 0,
+          hard = 0;
+        TOPICS.forEach((t) =>
+          t.tasks.forEach((tk) => {
+            if (tk.d === "easy") easy++;
+            else if (tk.d === "medium") med++;
+            else hard++;
+          }),
+        );
+        document.getElementById("easyCount").textContent = easy;
+        document.getElementById("medCount").textContent = med;
+        document.getElementById("hardCount").textContent = hard;
+
+        let num = 0;
+        TOPICS.forEach((topic) => {
+          const sec = document.createElement("section");
+          sec.className = "topic-section";
+
+          const hdr = document.createElement("div");
+          hdr.className = "topic-header";
+          hdr.innerHTML = `
+      <div class="topic-icon" style="background:${topic.color}1a;color:${topic.color}">${topic.icon}</div>
+      <span class="topic-title">${topic.title}</span>
+      <div class="topic-meta">
+        <span class="topic-count">${topic.tasks.length} заданий</span>
+      </div>
+    `;
+          sec.appendChild(hdr);
+
+          const grid = document.createElement("div");
+          grid.className = "task-grid";
+
+          topic.tasks.forEach((task, i) => {
+            num++;
+            const id = `${topic.id}_${i}`;
+            const isDone = !!done[id];
+
+            const card = document.createElement("div");
+            card.className = "task-card" + (isDone ? " done" : "");
+            card.style.setProperty("--card-color", topic.color);
+            card.style.setProperty("--card-glow", `${topic.color}0f`);
+            card.dataset.diff = task.d;
+            card.dataset.done = isDone ? "1" : "0";
+            card.dataset.text = task.t.replace(/<[^>]+>/g, "").toLowerCase();
+
+            const labels = {
+              easy: "Лёгкое",
+              medium: "Среднее",
+              hard: "Сложное",
+            };
+            const classes = {
+              easy: "diff-easy",
+              medium: "diff-medium",
+              hard: "diff-hard",
+            };
+
+            card.innerHTML = `
+        <div class="task-top">
+          <span class="task-num">#${String(num).padStart(3, "0")}</span>
+          <span class="difficulty ${classes[task.d]}">${labels[task.d]}</span>
+        </div>
+        <div class="task-text">${task.t}</div>
+        ${task.code ? `<div class="code-block">${task.code}</div>` : ""}
+        <div class="task-actions">
+          <button class="btn-done" onclick="toggleDone('${id}',this)">
+            ${isDone ? "✅ Сделано" : "○ Выполнено"}
+          </button>
+        </div>
+      `;
+            grid.appendChild(card);
+          });
+
+          sec.appendChild(grid);
+          root.appendChild(sec);
+        });
+
+        updateProgress();
+        applyFilter();
+      }
+
+      function toggleDone(id, btn) {
+        done[id] = !done[id];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(done));
+        const card = btn.closest(".task-card");
+        card.classList.toggle("done", done[id]);
+        card.dataset.done = done[id] ? "1" : "0";
+        btn.innerHTML = done[id] ? "✅ Сделано" : "○ Выполнено";
+        updateProgress();
+      }
+
+      function updateProgress() {
+        const cnt = Object.values(done).filter(Boolean).length;
+        const pct = ((cnt / TOTAL) * 100).toFixed(1);
+        document.getElementById("progressBar").style.width = pct + "%";
+        document.getElementById("progressText").textContent =
+          `${cnt} / ${TOTAL}`;
+        document.getElementById("floatCounter").textContent =
+          `✅ ${cnt} / ${TOTAL}`;
+      }
+
+      function setFilter(f, btn) {
+        currentFilter = f;
+        document
+          .querySelectorAll(".filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        applyFilter();
+      }
+
+      function filterTasks() {
+        searchQuery = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        applyFilter();
+      }
+
+      function applyFilter() {
+        document.querySelectorAll(".task-card").forEach((card) => {
+          let show = true;
+          const d = card.dataset.diff;
+          const dn = card.dataset.done === "1";
+          if (currentFilter === "easy") show = d === "easy";
+          else if (currentFilter === "medium") show = d === "medium";
+          else if (currentFilter === "hard") show = d === "hard";
+          else if (currentFilter === "done") show = dn;
+          else if (currentFilter === "undone") show = !dn;
+          if (searchQuery && !card.dataset.text.includes(searchQuery))
+            show = false;
+          card.classList.toggle("hidden", !show);
+        });
+
+        document.querySelectorAll(".topic-section").forEach((sec) => {
+          const vis = [...sec.querySelectorAll(".task-card")].some(
+            (c) => !c.classList.contains("hidden"),
+          );
+          sec.classList.toggle("hidden", !vis);
+        });
+      }
+
+      function resetAll() {
+        if (confirm("Сбросить весь прогресс?")) {
+          done = {};
+          localStorage.removeItem(STORAGE_KEY);
+          renderAll();
+        }
+      }
+
+      renderAll();
+    </script>
+  </body>
+</html>
