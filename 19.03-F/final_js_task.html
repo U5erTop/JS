@@ -1,0 +1,997 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Экзаменационные билеты по JavaScript</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap");
+
+      :root {
+        --bg: #0b1020;
+        --surface: #121933;
+        --card: #18213f;
+        --border: #2b3869;
+        --text: #e9efff;
+        --muted: #98a6d4;
+        --accent: #60a5fa;
+        --accent2: #5eead4;
+        --accent3: #f59e0b;
+        --accent4: #22c55e;
+        --accent5: #ef4444;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Inter, sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(96, 165, 250, 0.14),
+            transparent 28%
+          ),
+          radial-gradient(
+            circle at bottom right,
+            rgba(94, 234, 212, 0.1),
+            transparent 24%
+          ),
+          var(--bg);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 0 20px 80px;
+      }
+
+      header {
+        text-align: center;
+        padding: 60px 0 30px;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        background: linear-gradient(135deg, var(--accent), var(--accent2));
+        color: #05121d;
+        margin-bottom: 18px;
+      }
+
+      h1 {
+        font-size: clamp(2.4rem, 6vw, 4.9rem);
+        line-height: 1.05;
+        font-weight: 900;
+        background: linear-gradient(
+          135deg,
+          #fff,
+          var(--accent),
+          var(--accent2)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 14px;
+      }
+
+      .subtitle {
+        max-width: 860px;
+        margin: 0 auto 28px;
+        color: var(--muted);
+        line-height: 1.65;
+        font-size: 1.05rem;
+      }
+
+      .stats {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+      }
+
+      .stat {
+        background: rgba(24, 33, 63, 0.92);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 12px 18px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .stat .num {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--accent2);
+      }
+
+      .toolbar,
+      .intro-card {
+        background: rgba(24, 33, 63, 0.94);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 18px;
+        margin-bottom: 20px;
+        backdrop-filter: blur(10px);
+      }
+
+      .intro-card p {
+        color: var(--muted);
+        line-height: 1.7;
+        font-size: 0.96rem;
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .search-wrap {
+        position: relative;
+        flex: 1;
+        min-width: 250px;
+      }
+
+      .search-wrap::before {
+        content: "🔎";
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.95rem;
+      }
+
+      .search-wrap input {
+        width: 100%;
+        background: #0f1630;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        color: var(--text);
+        padding: 12px 14px 12px 42px;
+        font-size: 0.95rem;
+        outline: none;
+      }
+
+      .filter-btn,
+      .action-btn {
+        background: #0f1630;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        padding: 11px 14px;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.18s;
+      }
+
+      .filter-btn:hover,
+      .filter-btn.active,
+      .action-btn:hover {
+        border-color: var(--accent);
+        color: white;
+        background: rgba(96, 165, 250, 0.12);
+      }
+
+      .tickets-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        gap: 16px;
+        margin-top: 18px;
+      }
+
+      .ticket {
+        background: rgba(24, 33, 63, 0.96);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 20px;
+        transition: 0.2s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .ticket::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          var(--accent),
+          var(--accent2),
+          transparent
+        );
+        opacity: 0;
+        transition: 0.2s;
+      }
+
+      .ticket:hover {
+        transform: translateY(-3px);
+        border-color: var(--accent);
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.25);
+      }
+
+      .ticket:hover::before {
+        opacity: 1;
+      }
+
+      .ticket-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .ticket-num {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.82rem;
+        color: var(--accent2);
+        background: #0f1630;
+        border: 1px solid var(--border);
+        padding: 5px 10px;
+        border-radius: 10px;
+      }
+
+      .ticket-tag {
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 800;
+        color: var(--accent3);
+        background: rgba(245, 158, 11, 0.12);
+        padding: 5px 10px;
+        border-radius: 999px;
+      }
+
+      .ticket h2 {
+        font-size: 1.15rem;
+        margin-bottom: 14px;
+        font-weight: 800;
+      }
+
+      .block {
+        margin-bottom: 16px;
+      }
+
+      .block-title {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--muted);
+        margin-bottom: 8px;
+        font-weight: 800;
+      }
+
+      .block ul,
+      .block ol {
+        padding-left: 20px;
+        line-height: 1.65;
+        color: var(--text);
+      }
+
+      .block li + li {
+        margin-top: 6px;
+      }
+
+      pre {
+        background: #0f1630;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px;
+        overflow-x: auto;
+        color: #c9d7ff;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.8rem;
+        line-height: 1.6;
+        white-space: pre-wrap;
+      }
+
+      .print-note {
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 0.92rem;
+        line-height: 1.6;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      @media (max-width: 720px) {
+        .tickets-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media print {
+        body {
+          background: #fff;
+          color: #000;
+        }
+        .toolbar,
+        .badge,
+        .subtitle,
+        .stats,
+        .action-btn {
+          display: none !important;
+        }
+        .container {
+          max-width: 100%;
+          padding: 0;
+        }
+        .ticket {
+          break-inside: avoid;
+          page-break-inside: avoid;
+          background: #fff;
+          color: #000;
+          border: 1px solid #ccc;
+          box-shadow: none;
+        }
+        pre {
+          color: #000;
+          background: #f5f5f5;
+          border-color: #ddd;
+        }
+        .block-title,
+        .ticket-num,
+        .ticket-tag {
+          color: #333 !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="badge">✦ JavaScript</div>
+        <h1>Экзаменационные билеты<br />по JavaScript</h1>
+        <p class="subtitle">30 билетов: теория, практика.</p>
+
+        <div class="stats">
+          <div class="stat"><span class="num">30</span> билетов</div>
+          <div class="stat">
+            <span class="num">60</span> теоретических вопросов
+          </div>
+          <div class="stat">
+            <span class="num">60</span> практических заданий
+          </div>
+          <div class="stat"><span class="num">30</span> мини-разборов кода</div>
+        </div>
+      </header>
+
+      <div class="intro-card">
+        <p>
+          Формат билета: 2 вопроса по теории, 2 практических задания и 1
+          небольшой фрагмент кода для объяснения результата.
+        </p>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-wrap">
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Поиск по билетам, темам и заданиям..."
+            oninput="filterTickets()"
+          />
+        </div>
+        <button class="filter-btn active" onclick="setFilter('all', this)">
+          Все
+        </button>
+        <button class="filter-btn" onclick="setFilter('theory', this)">
+          Теория
+        </button>
+        <button class="filter-btn" onclick="setFilter('practice', this)">
+          Практика
+        </button>
+      </div>
+
+      <div class="tickets-grid" id="ticketsRoot"></div>
+    </div>
+
+    <script>
+      const tickets = [
+        {
+          num: 1,
+          title: "Типы данных",
+          theory: [
+            "Какие типы данных есть в JavaScript?",
+            "Чем примитивы отличаются от объектных значений?",
+          ],
+          practice: [
+            "Написать функцию, которая определяет тип переданного значения.",
+            "Написать функцию, которая проверяет, является ли значение массивом.",
+          ],
+          code: `console.log(typeof null);
+console.log(typeof []);
+console.log(typeof function(){});`,
+        },
+        {
+          num: 2,
+          title: "Преобразование типов",
+          theory: [
+            "Что такое преобразование типов в JavaScript?",
+            "В чём разница между явным и неявным преобразованием?",
+          ],
+          practice: [
+            "Написать функцию, которая безопасно преобразует строку в число.",
+            "Написать функцию, которая принимает любое значение и возвращает boolean.",
+          ],
+          code: `console.log("5" + 2);
+console.log("5" - 2);
+console.log(Boolean("0"));
+console.log(Boolean(""));`,
+        },
+        {
+          num: 3,
+          title: "Числа и математика",
+          theory: [
+            "Основные арифметические операторы в JavaScript.",
+            "Что такое NaN, Infinity и -Infinity?",
+          ],
+          practice: [
+            "Написать калькулятор для двух чисел и оператора.",
+            "Написать функцию округления числа до 2 знаков после запятой.",
+          ],
+          code: `console.log(0.1 + 0.2);
+console.log(Number.isNaN("abc" / 2));`,
+        },
+        {
+          num: 4,
+          title: "Сравнения",
+          theory: [
+            "Чем отличаются == и ===?",
+            "Как работают операторы сравнения для строк?",
+          ],
+          practice: [
+            "Написать функцию сравнения двух значений без нестрогого равенства.",
+            "Написать функцию, которая проверяет, входит ли число в диапазон.",
+          ],
+          code: `console.log("5" == 5);
+console.log("5" === 5);
+console.log(null == undefined);
+console.log(null === undefined);`,
+        },
+        {
+          num: 5,
+          title: "Условные конструкции",
+          theory: [
+            "Как работают if, else if, else?",
+            "Что такое тернарный оператор?",
+          ],
+          practice: [
+            "Написать функцию, которая определяет знак числа.",
+            "Написать функцию, которая возвращает 'adult' или 'minor' по возрасту.",
+          ],
+          code: `let x = 0;
+console.log(x ? "yes" : "no");`,
+        },
+        {
+          num: 6,
+          title: "Логические операторы",
+          theory: [
+            "Как работают логические операторы &&, ||, !?",
+            "Что такое short-circuit evaluation?",
+          ],
+          practice: [
+            "Написать функцию проверки логина и пароля.",
+            "Написать функцию, которая возвращает первое truthy-значение из трёх аргументов.",
+          ],
+          code: `console.log(0 || "hello");
+console.log(1 && 2 && 3);
+console.log(!"");`,
+        },
+        {
+          num: 7,
+          title: "Операторы ?? и ??=",
+          theory: [
+            "Что такое ?? и чем он отличается от ||?",
+            "Что делает ??=?",
+          ],
+          practice: [
+            "Написать функцию установки значения по умолчанию через ??.",
+            "Написать конфиг-объект, где поля подставляются только если null или undefined.",
+          ],
+          code: `console.log(0 || 10);
+console.log(0 ?? 10);
+console.log("" || "default");
+console.log("" ?? "default");`,
+        },
+        {
+          num: 8,
+          title: "Циклы",
+          theory: [
+            "Циклы for, while, do...while.",
+            "Когда используют break и continue?",
+          ],
+          practice: [
+            "Вывести числа от 1 до 100, кратные 3.",
+            "Написать функцию суммы чисел от 1 до n.",
+          ],
+          code: `for (let i = 0; i < 5; i++) {
+  if (i === 2) continue;
+  console.log(i);
+}`,
+        },
+        {
+          num: 9,
+          title: "Switch",
+          theory: [
+            "Как работает switch?",
+            "Когда switch удобнее, чем if...else?",
+          ],
+          practice: [
+            "Написать программу определения дня недели по номеру.",
+            "Написать обработчик ролей пользователя через switch.",
+          ],
+          code: `let a = 2;
+switch (a) {
+  case 1:
+  case 2:
+    console.log("ok");
+    break;
+  default:
+    console.log("no");
+}`,
+        },
+        {
+          num: 10,
+          title: "Функции",
+          theory: [
+            "Что такое функция?",
+            "Чем return отличается от console.log?",
+          ],
+          practice: [
+            "Написать функцию суммы двух чисел.",
+            "Написать функцию проверки чётности.",
+          ],
+          code: `function test() {
+  console.log("A");
+}
+console.log(test());`,
+        },
+        {
+          num: 11,
+          title: "Function Declaration и Function Expression",
+          theory: [
+            "Что такое Function Declaration и Function Expression?",
+            "В чём разница в hoisting между ними?",
+          ],
+          practice: [
+            "Объявить одну функцию через declaration, вторую через expression.",
+            "Написать функцию-фабрику, возвращающую другую функцию.",
+          ],
+          code: `sayHi();
+
+function sayHi() {
+  console.log("Hi");
+}`,
+        },
+        {
+          num: 12,
+          title: "Стрелочные функции",
+          theory: [
+            "Что такое стрелочная функция?",
+            "Чем стрелочная функция отличается от обычной по this?",
+          ],
+          practice: [
+            "Переписать 3 обычные функции в стрелочные.",
+            "Написать стрелочную функцию для фильтрации массива чисел.",
+          ],
+          code: `const user = {
+  name: "Ann",
+  say: () => console.log(this.name)
+};
+user.say();`,
+        },
+        {
+          num: 13,
+          title: "Область видимости",
+          theory: [
+            "Что такое область видимости?",
+            "Чем отличаются var, let, const?",
+          ],
+          practice: [
+            "Показать пример блочной области видимости.",
+            "Написать функцию, внутри которой объявлены локальные переменные.",
+          ],
+          code: `if (true) {
+  var a = 1;
+  let b = 2;
+}
+console.log(a);
+// console.log(b);`,
+        },
+        {
+          num: 14,
+          title: "Замыкания",
+          theory: [
+            "Что такое замыкание?",
+            "Где замыкания применяются на практике?",
+          ],
+          practice: [
+            "Написать счётчик через замыкание.",
+            "Написать функцию makeMultiplier(n).",
+          ],
+          code: `function outer() {
+  let x = 10;
+  return function () {
+    return x;
+  };
+}
+const fn = outer();
+console.log(fn());`,
+        },
+        {
+          num: 15,
+          title: "Объекты",
+          theory: [
+            "Что такое объект в JavaScript?",
+            "Как обращаться к свойствам объекта?",
+          ],
+          practice: [
+            "Создать объект пользователя с 5 свойствами.",
+            "Добавить и удалить свойства у объекта.",
+          ],
+          code: `const user = { name: "Ivan", age: 20 };
+console.log(user.name);
+console.log(user["age"]);`,
+        },
+        {
+          num: 16,
+          title: "Копирование объектов",
+          theory: [
+            "Как копируются объекты?",
+            "Чем поверхностная копия отличается от глубокой?",
+          ],
+          practice: [
+            "Скопировать объект через spread.",
+            "Написать функцию поверхностного копирования.",
+          ],
+          code: `const a = { x: 1, nested: { y: 2 } };
+const b = { ...a };
+b.nested.y = 100;
+console.log(a.nested.y);`,
+        },
+        {
+          num: 17,
+          title: "Сборка мусора",
+          theory: [
+            "Что такое сборка мусора?",
+            "Что значит, что объект достижим?",
+          ],
+          practice: [
+            "Привести пример возможной утечки памяти через глобальную ссылку.",
+            "Объяснить, зачем нужны WeakMap и WeakSet.",
+          ],
+          code: `let obj = { name: "test" };
+let ref = obj;
+obj = null;
+console.log(ref);`,
+        },
+        {
+          num: 18,
+          title: "Методы объекта и this",
+          theory: [
+            "Что такое метод объекта?",
+            "Как работает this внутри метода?",
+          ],
+          practice: [
+            "Создать объект-калькулятор с методами add, sub, mul.",
+            "Написать объект с цепочкой методов, возвращающих this.",
+          ],
+          code: `const user = {
+  name: "Mila",
+  say() {
+    console.log(this.name);
+  }
+};
+user.say();`,
+        },
+        {
+          num: 19,
+          title: "Конструктор и new",
+          theory: [
+            "Что делает оператор new?",
+            "Что такое функция-конструктор?",
+          ],
+          practice: [
+            "Написать конструктор User(name, age).",
+            "Создать несколько объектов через new.",
+          ],
+          code: `function User(name) {
+  this.name = name;
+}
+const u = new User("Alex");
+console.log(u.name);`,
+        },
+        {
+          num: 20,
+          title: "Опциональная цепочка",
+          theory: [
+            "Что такое опциональная цепочка ?.",
+            "Когда её удобно использовать?",
+          ],
+          practice: [
+            "Написать безопасный доступ к глубоко вложенному свойству.",
+            "Написать функцию getCity(user) с использованием ?.",
+          ],
+          code: `const user = null;
+console.log(user?.address?.city);`,
+        },
+        {
+          num: 21,
+          title: "Symbol",
+          theory: [
+            "Что такое Symbol?",
+            "Зачем нужны символьные ключи в объектах?",
+          ],
+          practice: [
+            "Создать объект с одним строковым и одним символьным ключом.",
+            "Написать пример скрытого служебного свойства через Symbol.",
+          ],
+          code: `const id1 = Symbol("id");
+const id2 = Symbol("id");
+console.log(id1 === id2);`,
+        },
+        {
+          num: 22,
+          title: "Преобразование объектов в примитивы",
+          theory: [
+            "Как объект преобразуется в примитив?",
+            "В каком порядке используются Symbol.toPrimitive, valueOf, toString?",
+          ],
+          practice: [
+            "Создать объект с собственным toString().",
+            "Создать объект с Symbol.toPrimitive.",
+          ],
+          code: `const obj = {
+  toString() { return "10"; }
+};
+console.log(obj + 5);`,
+        },
+        {
+          num: 23,
+          title: "Строки",
+          theory: [
+            "Какие методы есть у строк?",
+            "Чем строки отличаются от массивов символов?",
+          ],
+          practice: [
+            "Написать функцию capitalize(str).",
+            "Написать функцию проверки палиндрома строки.",
+          ],
+          code: `const s = "hello";
+console.log(s.toUpperCase());
+console.log(s.slice(1, 4));`,
+        },
+        {
+          num: 24,
+          title: "Массивы",
+          theory: [
+            "Основные методы массивов.",
+            "Чем slice отличается от splice?",
+          ],
+          practice: [
+            "Написать функцию удаления дубликатов из массива.",
+            "Написать функцию поиска максимального элемента массива.",
+          ],
+          code: `const arr = [1, 2, 3, 4];
+console.log(arr.slice(1, 3));
+console.log(arr);`,
+        },
+        {
+          num: 25,
+          title: "Методы массивов",
+          theory: [
+            "Что делают map, filter, reduce?",
+            "Когда лучше использовать каждый из этих методов?",
+          ],
+          practice: [
+            "Получить массив квадратов через map.",
+            "Посчитать сумму массива через reduce.",
+          ],
+          code: `const arr = [1, 2, 3];
+const res = arr.map(x => x * 2).filter(x => x > 2);
+console.log(res);`,
+        },
+        {
+          num: 26,
+          title: "Итерируемые объекты",
+          theory: ["Что такое итерируемый объект?", "Что делает for...of?"],
+          practice: [
+            "Написать собственный итерируемый объект-диапазон.",
+            "Перебрать строку, массив и Set через for...of.",
+          ],
+          code: `const str = "JS";
+for (const ch of str) {
+  console.log(ch);
+}`,
+        },
+        {
+          num: 27,
+          title: "Map и Set",
+          theory: [
+            "Чем Map отличается от обычного объекта?",
+            "Чем Set отличается от массива?",
+          ],
+          practice: [
+            "Написать частотный словарь слов через Map.",
+            "Удалить дубликаты из массива через Set.",
+          ],
+          code: `const set = new Set([1, 2, 2, 3]);
+console.log(set.size);`,
+        },
+        {
+          num: 28,
+          title: "Object.keys / values / entries и деструктуризация",
+          theory: [
+            "Что делают Object.keys, Object.values, Object.entries?",
+            "Что такое деструктурирующее присваивание?",
+          ],
+          practice: [
+            "Из объекта пользователя получить массив ключей и значений.",
+            "Деструктурировать объект и массив в несколько переменных.",
+          ],
+          code: `const user = { name: "Leo", age: 19 };
+const { name, age } = user;
+console.log(name, age);`,
+        },
+        {
+          num: 29,
+          title: "Дата и время",
+          theory: [
+            "Как работает объект Date в JavaScript?",
+            "Что такое timestamp?",
+          ],
+          practice: [
+            "Написать функцию форматирования даты в виде DD.MM.YYYY.",
+            "Посчитать разницу между двумя датами в днях.",
+          ],
+          code: `const d = new Date();
+console.log(d.getFullYear());
+console.log(Date.now());`,
+        },
+        {
+          num: 30,
+          title: "JSON и toJSON",
+          theory: [
+            "Что такое JSON и чем он отличается от объекта JavaScript?",
+            "Что делают JSON.stringify, JSON.parse и toJSON()?",
+          ],
+          practice: [
+            "Сериализовать объект в JSON и восстановить обратно.",
+            "Создать объект с собственным методом toJSON().",
+          ],
+          code: `const user = {
+  name: "Kate",
+  toJSON() {
+    return { username: this.name };
+  }
+};
+console.log(JSON.stringify(user));`,
+        },
+      ];
+
+      let currentFilter = "all";
+      let searchQuery = "";
+
+      function renderTickets() {
+        const root = document.getElementById("ticketsRoot");
+        root.innerHTML = "";
+
+        tickets.forEach((ticket) => {
+          const card = document.createElement("article");
+          card.className = "ticket";
+          card.dataset.text = [
+            `билет ${ticket.num}`,
+            ticket.title,
+            ...ticket.theory,
+            ...ticket.practice,
+            ticket.code,
+          ]
+            .join(" ")
+            .toLowerCase();
+
+          card.innerHTML = `
+          <div class="ticket-head">
+            <span class="ticket-num">Билет ${ticket.num}</span>
+            <span class="ticket-tag">JS Exam</span>
+          </div>
+
+          <h2>${ticket.title}</h2>
+
+          <div class="block">
+            <div class="block-title">Теория</div>
+            <ol>
+              ${ticket.theory.map((q) => `<li>${q}</li>`).join("")}
+            </ol>
+          </div>
+
+          <div class="block">
+            <div class="block-title">Практика</div>
+            <ol>
+              ${ticket.practice.map((q) => `<li>${q}</li>`).join("")}
+            </ol>
+          </div>
+
+          <div class="block">
+            <div class="block-title">Разбор кода</div>
+            <pre>${escapeHtml(ticket.code)}</pre>
+          </div>
+        `;
+
+          root.appendChild(card);
+        });
+
+        applyFilter();
+      }
+
+      function escapeHtml(str) {
+        return str
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;");
+      }
+
+      function setFilter(filter, btn) {
+        currentFilter = filter;
+        document
+          .querySelectorAll(".filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        applyFilter();
+      }
+
+      function filterTickets() {
+        searchQuery = document
+          .getElementById("searchInput")
+          .value.toLowerCase()
+          .trim();
+        applyFilter();
+      }
+
+      function applyFilter() {
+        document.querySelectorAll(".ticket").forEach((card) => {
+          const text = card.dataset.text;
+          let visible = true;
+
+          if (currentFilter === "theory") {
+            visible =
+              text.includes("что такое") ||
+              text.includes("чем ") ||
+              text.includes("как ");
+          } else if (currentFilter === "practice") {
+            visible =
+              text.includes("написать") ||
+              text.includes("создать") ||
+              text.includes("переписать");
+          }
+
+          if (searchQuery && !text.includes(searchQuery)) visible = false;
+          card.classList.toggle("hidden", !visible);
+        });
+      }
+
+      renderTickets();
+    </script>
+  </body>
+</html>
