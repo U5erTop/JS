@@ -1,0 +1,1588 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS Tasks — Типы данных и структуры</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap");
+
+      :root {
+        --bg: #0b1020;
+        --surface: #11172a;
+        --card: #161d34;
+        --border: #2a355a;
+        --text: #e5ecff;
+        --muted: #94a3c4;
+        --accent: #5eead4;
+        --accent2: #60a5fa;
+        --accent3: #f59e0b;
+        --accent4: #22c55e;
+        --accent5: #ef4444;
+        --accent6: #a78bfa;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Inter, sans-serif;
+        background:
+          radial-gradient(
+            circle at top left,
+            rgba(96, 165, 250, 0.12),
+            transparent 30%
+          ),
+          radial-gradient(
+            circle at bottom right,
+            rgba(94, 234, 212, 0.1),
+            transparent 25%
+          ),
+          var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 0 20px 80px;
+      }
+
+      header {
+        padding: 64px 0 36px;
+        text-align: center;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        background: linear-gradient(135deg, var(--accent2), var(--accent));
+        color: #061018;
+        margin-bottom: 18px;
+      }
+
+      h1 {
+        font-size: clamp(2.4rem, 6vw, 5rem);
+        line-height: 1.05;
+        font-weight: 900;
+        background: linear-gradient(
+          135deg,
+          #fff,
+          var(--accent2),
+          var(--accent)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 12px;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 1.05rem;
+        max-width: 760px;
+        margin: 0 auto 34px;
+        line-height: 1.6;
+      }
+
+      .stats {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin-bottom: 28px;
+      }
+
+      .stat-chip {
+        background: rgba(22, 29, 52, 0.9);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px 18px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .stat-chip .num {
+        color: var(--accent);
+        font-size: 1.35rem;
+        font-weight: 800;
+      }
+
+      .toolbar,
+      .progress-wrap {
+        background: rgba(22, 29, 52, 0.9);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 16px 18px;
+        margin-bottom: 22px;
+        backdrop-filter: blur(10px);
+      }
+
+      .progress-wrap {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .progress-label {
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .progress-bar {
+        flex: 1;
+        min-width: 220px;
+        height: 10px;
+        background: #0e1425;
+        border-radius: 999px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+      }
+
+      .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--accent2), var(--accent));
+        transition: width 0.35s ease;
+      }
+
+      .progress-count {
+        font-family: "JetBrains Mono", monospace;
+        color: var(--accent);
+        font-size: 0.9rem;
+        white-space: nowrap;
+      }
+
+      .btn-reset {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        padding: 10px 14px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 700;
+        transition: 0.2s;
+      }
+
+      .btn-reset:hover {
+        color: white;
+        border-color: var(--accent5);
+      }
+
+      .toolbar {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .search-wrap {
+        flex: 1;
+        min-width: 240px;
+        position: relative;
+      }
+
+      .search-wrap input {
+        width: 100%;
+        padding: 12px 14px 12px 42px;
+        border-radius: 12px;
+        background: #0e1425;
+        border: 1px solid var(--border);
+        color: var(--text);
+        outline: none;
+        font-size: 0.95rem;
+      }
+
+      .search-wrap::before {
+        content: "🔎";
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.95rem;
+      }
+
+      .filter-btn {
+        background: #0e1425;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        padding: 10px 14px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 700;
+        transition: 0.2s;
+      }
+
+      .filter-btn:hover,
+      .filter-btn.active {
+        color: white;
+        border-color: var(--accent2);
+        background: rgba(96, 165, 250, 0.12);
+      }
+
+      .topic-section {
+        margin-top: 34px;
+      }
+
+      .topic-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 18px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        background: rgba(11, 16, 32, 0.92);
+        backdrop-filter: blur(12px);
+        z-index: 10;
+      }
+
+      .topic-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: grid;
+        place-items: center;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+      }
+
+      .topic-title {
+        font-size: 1.32rem;
+        font-weight: 800;
+      }
+
+      .topic-count {
+        margin-left: auto;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        background: #0e1425;
+        border-radius: 999px;
+        padding: 5px 11px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.8rem;
+      }
+
+      .task-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        gap: 14px;
+      }
+
+      .task-card {
+        background: rgba(22, 29, 52, 0.94);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 18px;
+        transition:
+          transform 0.18s ease,
+          border-color 0.18s ease,
+          box-shadow 0.18s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .task-card::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          var(--card-color, var(--accent2)),
+          transparent
+        );
+        opacity: 0;
+        transition: 0.18s;
+      }
+
+      .task-card:hover {
+        transform: translateY(-3px);
+        border-color: var(--card-color, var(--accent2));
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+      }
+
+      .task-card:hover::before {
+        opacity: 1;
+      }
+
+      .task-card.done {
+        border-color: rgba(34, 197, 94, 0.4);
+        background: rgba(34, 197, 94, 0.08);
+      }
+
+      .task-card.done::before {
+        opacity: 1;
+        background: linear-gradient(90deg, var(--accent4), transparent);
+      }
+
+      .task-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .task-num {
+        font-family: "JetBrains Mono", monospace;
+        color: var(--muted);
+        background: #0e1425;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 4px 8px;
+        font-size: 0.76rem;
+      }
+
+      .difficulty {
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      .diff-easy {
+        background: rgba(34, 197, 94, 0.14);
+        color: var(--accent4);
+      }
+      .diff-medium {
+        background: rgba(245, 158, 11, 0.14);
+        color: var(--accent3);
+      }
+      .diff-hard {
+        background: rgba(239, 68, 68, 0.14);
+        color: var(--accent5);
+      }
+
+      .task-text {
+        font-size: 0.94rem;
+        line-height: 1.65;
+        color: var(--text);
+        margin-bottom: 16px;
+      }
+
+      .task-text code {
+        font-family: "JetBrains Mono", monospace;
+        background: #0e1425;
+        border: 1px solid var(--border);
+        border-radius: 7px;
+        padding: 2px 6px;
+        color: var(--accent);
+        font-size: 0.85em;
+      }
+
+      .task-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .btn-done {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--muted);
+        padding: 9px 14px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 700;
+        transition: 0.18s;
+      }
+
+      .btn-done:hover {
+        border-color: var(--accent4);
+        color: var(--accent4);
+      }
+
+      .task-card.done .btn-done {
+        color: var(--accent4);
+        border-color: var(--accent4);
+        background: rgba(34, 197, 94, 0.08);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .float-counter {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        background: linear-gradient(135deg, var(--accent2), var(--accent));
+        color: #041018;
+        padding: 14px 18px;
+        border-radius: 18px;
+        font-weight: 900;
+        box-shadow: 0 16px 40px rgba(96, 165, 250, 0.35);
+        z-index: 100;
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 999px;
+      }
+
+      @media (max-width: 680px) {
+        .task-grid {
+          grid-template-columns: 1fr;
+        }
+        .float-counter {
+          right: 12px;
+          bottom: 12px;
+          padding: 10px 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="badge">✦ JavaScript Practice</div>
+        <h1>200 заданий<br />по структурам данных</h1>
+        <p class="subtitle">
+          Типы данных · примитивы · числа · строки · массивы · Map/Set · Date ·
+          JSON
+        </p>
+
+        <div class="stats">
+          <div class="stat-chip"><span class="num">200</span> заданий</div>
+          <div class="stat-chip"><span class="num">13</span> тем</div>
+          <div class="stat-chip">
+            <span class="num" id="easyCount">0</span> лёгких
+          </div>
+          <div class="stat-chip">
+            <span class="num" id="medCount">0</span> средних
+          </div>
+          <div class="stat-chip">
+            <span class="num" id="hardCount">0</span> сложных
+          </div>
+        </div>
+      </header>
+
+      <div class="progress-wrap">
+        <span class="progress-label">⚡ Прогресс</span>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressBar"></div>
+        </div>
+        <span class="progress-count" id="progressText">0 / 200</span>
+        <button class="btn-reset" onclick="resetAll()">Сбросить</button>
+      </div>
+
+      <div class="toolbar">
+        <div class="search-wrap">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Поиск задания..."
+            oninput="filterTasks()"
+          />
+        </div>
+        <button class="filter-btn active" onclick="setFilter('all', this)">
+          Все
+        </button>
+        <button class="filter-btn" onclick="setFilter('easy', this)">
+          Лёгкие
+        </button>
+        <button class="filter-btn" onclick="setFilter('medium', this)">
+          Средние
+        </button>
+        <button class="filter-btn" onclick="setFilter('hard', this)">
+          Сложные
+        </button>
+        <button class="filter-btn" onclick="setFilter('done', this)">
+          Выполненные
+        </button>
+        <button class="filter-btn" onclick="setFilter('undone', this)">
+          Невыполненные
+        </button>
+      </div>
+
+      <div id="tasksRoot"></div>
+    </div>
+
+    <div class="float-counter" id="floatCounter">✅ 0 / 200</div>
+
+    <script>
+      const TOPICS = [
+        {
+          id: "types",
+          title: "Типы данных",
+          icon: "🧩",
+          color: "#60a5fa",
+          tasks: [
+            {
+              d: "easy",
+              t: "Перечисли все примитивные типы данных в JavaScript.",
+            },
+            { d: "easy", t: "Чем примитивы отличаются от объектов?" },
+            {
+              d: "easy",
+              t: 'Что возвращает <code>typeof 42</code>, <code>typeof "hi"</code>, <code>typeof true</code>?',
+            },
+            {
+              d: "easy",
+              t: "Что возвращает <code>typeof undefined</code> и <code>typeof null</code>? Объясни особенность.",
+            },
+            {
+              d: "easy",
+              t: 'Проверь тип значений: <code>[]</code>, <code>{}</code>, <code>Symbol("id")</code>, <code>10n</code>.',
+            },
+            {
+              d: "easy",
+              t: "Напиши функцию <code>getType(value)</code>, которая корректно определяет <code>null</code> отдельно от объекта.",
+            },
+            {
+              d: "easy",
+              t: "Что такое <code>BigInt</code>? Приведи пример создания большого целого числа.",
+            },
+            {
+              d: "medium",
+              t: "Напиши код, который проверяет: является ли значение массивом, объектом, функцией или примитивом.",
+            },
+            {
+              d: "medium",
+              t: "Объясни разницу между <code>typeof</code> и <code>instanceof</code> на примере массива.",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию, которая принимает любое значение и возвращает строку с его типом в человекочитаемом виде.",
+            },
+            {
+              d: "medium",
+              t: "Что такое truthy и falsy значения? Составь таблицу из 10 примеров.",
+            },
+            {
+              d: "medium",
+              t: "Почему функция в JavaScript тоже считается объектом? Покажи это на примере свойств функции.",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>isPlainObject(value)</code>, которая возвращает <code>true</code> только для обычных объектов.",
+            },
+            {
+              d: "hard",
+              t: "Сравни поведение <code>typeof</code>, <code>Object.prototype.toString.call()</code> и <code>Array.isArray()</code> на разных значениях.",
+            },
+            {
+              d: "hard",
+              t: "Реализуй утилиту <code>typeStats(arr)</code>, которая по массиву значений возвращает объект со счётчиками типов.",
+            },
+          ],
+        },
+
+        {
+          id: "primitive_methods",
+          title: "Методы примитивов",
+          icon: "✨",
+          color: "#5eead4",
+          tasks: [
+            {
+              d: "easy",
+              t: "Почему у примитивов можно вызывать методы, если они не являются объектами?",
+            },
+            {
+              d: "easy",
+              t: 'Проверь работу <code>"hello".toUpperCase()</code> и объясни, что происходит "под капотом".',
+            },
+            { d: "easy", t: "Что вернёт <code>(123.456).toFixed(2)</code>?" },
+            {
+              d: "easy",
+              t: "Используй <code>true.toString()</code> и объясни результат.",
+            },
+            {
+              d: "easy",
+              t: "Почему у <code>null</code> и <code>undefined</code> нельзя вызывать методы?",
+            },
+            {
+              d: "medium",
+              t: "Напиши пример, где строка временно оборачивается в объект для вызова метода.",
+            },
+            {
+              d: "medium",
+              t: 'Покажи разницу между примитивной строкой и объектом <code>new String("abc")</code>.',
+            },
+            {
+              d: "medium",
+              t: "Сравни поведение <code>new Number(5)</code> и числа <code>5</code> в условиях и сравнениях.",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию, которая принимает примитив и вызывает у него подходящий метод, если это возможно.",
+            },
+            {
+              d: "hard",
+              t: 'Объясни, почему <code>"abc".x = 10</code> не сохраняет свойство у строки.',
+            },
+            {
+              d: "hard",
+              t: "Покажи на примерах, почему объекты-обёртки <code>String</code>, <code>Number</code>, <code>Boolean</code> обычно не используют.",
+            },
+            {
+              d: "hard",
+              t: "Напиши мини-статью в кодовых комментариях: как работает временный объект-обёртка у примитивов.",
+            },
+          ],
+        },
+
+        {
+          id: "numbers",
+          title: "Числа",
+          icon: "🔢",
+          color: "#f59e0b",
+          tasks: [
+            {
+              d: "easy",
+              t: "Что такое тип <code>number</code> в JavaScript? Какие числа он хранит?",
+            },
+            {
+              d: "easy",
+              t: "Найди результат выражения <code>0.1 + 0.2</code> и объясни особенность.",
+            },
+            {
+              d: "easy",
+              t: "Чем отличаются <code>parseInt</code> и <code>parseFloat</code>?",
+            },
+            {
+              d: "easy",
+              t: 'Что вернёт <code>Number("123")</code> и <code>Number("123px")</code>?',
+            },
+            {
+              d: "easy",
+              t: "Используй <code>Math.round</code>, <code>Math.floor</code> и <code>Math.ceil</code> для одного и того же числа.",
+            },
+            { d: "easy", t: "Как получить случайное целое число от 1 до 10?" },
+            {
+              d: "easy",
+              t: "Что такое <code>NaN</code>? Как проверить, что значение — именно <code>NaN</code>?",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию <code>isFiniteNumber(value)</code>, которая проверяет, что значение — конечное число.",
+            },
+            {
+              d: "medium",
+              t: "Покажи разницу между <code>isNaN()</code> и <code>Number.isNaN()</code>.",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию округления числа до двух знаков после запятой.",
+            },
+            {
+              d: "medium",
+              t: "Используй <code>toString(2)</code>, чтобы перевести число в двоичную запись.",
+            },
+            {
+              d: "medium",
+              t: "Что такое <code>Infinity</code> и <code>-Infinity</code>? Приведи примеры получения.",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию <code>sumDigits(n)</code>, которая считает сумму цифр числа.",
+            },
+            {
+              d: "hard",
+              t: "Объясни, почему <code>9007199254740991</code> — особое число в JavaScript.",
+            },
+            {
+              d: "hard",
+              t: "Покажи, как использовать <code>BigInt</code> в арифметике и почему его нельзя смешивать с <code>number</code> без явного преобразования.",
+            },
+            {
+              d: "hard",
+              t: "Реализуй калькулятор, который принимает строку с числами и операцией и аккуратно обрабатывает ошибки преобразования.",
+            },
+          ],
+        },
+
+        {
+          id: "strings",
+          title: "Строки",
+          icon: "🔤",
+          color: "#a78bfa",
+          tasks: [
+            { d: "easy", t: "Создай строку тремя разными способами." },
+            {
+              d: "easy",
+              t: "Что такое шаблонные строки? Собери фразу с переменными через <code>`${...}`</code>.",
+            },
+            {
+              d: "easy",
+              t: "Используй методы <code>toUpperCase()</code> и <code>toLowerCase()</code>.",
+            },
+            {
+              d: "easy",
+              t: "Найди длину строки через свойство <code>length</code>.",
+            },
+            { d: "easy", t: "Получить первый и последний символ строки." },
+            {
+              d: "easy",
+              t: "Чем отличаются <code>slice()</code>, <code>substring()</code> и <code>substr()</code>? Проверь на примерах.",
+            },
+            {
+              d: "easy",
+              t: "Используй <code>includes()</code>, <code>startsWith()</code> и <code>endsWith()</code> для одной строки.",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию <code>capitalize(str)</code>, которая делает первую букву заглавной.",
+            },
+            {
+              d: "medium",
+              t: "Разбей строку на массив слов через <code>split()</code> и собери обратно через <code>join()</code>.",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию, которая считает количество вхождений буквы в строке.",
+            },
+            {
+              d: "medium",
+              t: "Удалить лишние пробелы в начале и конце строки, а потом заменить двойные пробелы на одинарные.",
+            },
+            {
+              d: "medium",
+              t: "Используй <code>replace()</code> и <code>replaceAll()</code> на одном примере.",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию проверки палиндрома для строки.",
+            },
+            {
+              d: "hard",
+              t: "Реализуй функцию <code>camelToKebab(str)</code> для преобразования <code>myVariableName</code> в <code>my-variable-name</code>.",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию, которая экранирует спецсимволы HTML в строке.",
+            },
+            {
+              d: "hard",
+              t: 'Сделай мини-парсер строки запроса вида <code>"name=Ivan&age=20"</code> в объект.',
+            },
+          ],
+        },
+
+        {
+          id: "arrays",
+          title: "Массивы",
+          icon: "📚",
+          color: "#60a5fa",
+          tasks: [
+            { d: "easy", t: "Создай массив чисел, строк и смешанный массив." },
+            {
+              d: "easy",
+              t: "Как получить первый, последний и предпоследний элемент массива?",
+            },
+            {
+              d: "easy",
+              t: "Что происходит при обращении к несуществующему индексу массива?",
+            },
+            {
+              d: "easy",
+              t: "Добавь элементы в конец массива через <code>push()</code> и в начало через <code>unshift()</code>.",
+            },
+            {
+              d: "easy",
+              t: "Удали элементы из конца и начала массива через <code>pop()</code> и <code>shift()</code>.",
+            },
+            {
+              d: "easy",
+              t: "Что хранится в свойстве <code>length</code>? Измени его вручную и посмотри на результат.",
+            },
+            {
+              d: "easy",
+              t: "Создай пустой массив длиной 5 и объясни, чем он отличается от массива <code>[undefined, undefined, ...]</code>.",
+            },
+            {
+              d: "medium",
+              t: "Перебери массив тремя способами: <code>for</code>, <code>for...of</code>, <code>forEach()</code>.",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию, которая разворачивает массив без использования <code>reverse()</code>.",
+            },
+            {
+              d: "medium",
+              t: "Объедини два массива через <code>concat()</code> и через spread.",
+            },
+            {
+              d: "medium",
+              t: "Скопируй массив разными способами и проверь, что копия не равна исходнику по ссылке.",
+            },
+            {
+              d: "medium",
+              t: "Найди индекс элемента через <code>indexOf()</code> и <code>includes()</code>.",
+            },
+            {
+              d: "medium",
+              t: "Используй <code>slice()</code> и <code>splice()</code> и объясни разницу.",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>unique(arr)</code>, которая удаляет дубликаты без использования <code>Set</code>.",
+            },
+            {
+              d: "hard",
+              t: "Реализуй функцию <code>chunk(arr, size)</code>, разбивающую массив на части.",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>flattenOneLevel(arr)</code>, которая разворачивает массив только на один уровень.",
+            },
+          ],
+        },
+
+        {
+          id: "array_methods",
+          title: "Методы массивов",
+          icon: "🛠️",
+          color: "#22c55e",
+          tasks: [
+            {
+              d: "easy",
+              t: "Используй <code>forEach()</code>, чтобы вывести каждый элемент массива.",
+            },
+            {
+              d: "easy",
+              t: "Используй <code>map()</code>, чтобы получить массив квадратов чисел.",
+            },
+            {
+              d: "easy",
+              t: "Используй <code>filter()</code>, чтобы оставить только чётные числа.",
+            },
+            {
+              d: "easy",
+              t: "Используй <code>reduce()</code>, чтобы посчитать сумму элементов.",
+            },
+            {
+              d: "easy",
+              t: "Чем отличаются <code>find()</code> и <code>filter()</code>?",
+            },
+            {
+              d: "easy",
+              t: "Используй <code>some()</code> и <code>every()</code> на одном массиве.",
+            },
+            {
+              d: "easy",
+              t: "Отсортируй массив строк по алфавиту через <code>sort()</code>.",
+            },
+            {
+              d: "medium",
+              t: "Почему для сортировки чисел нужно передавать колбэк в <code>sort()</code>? Покажи на примере.",
+            },
+            {
+              d: "medium",
+              t: "Напиши сортировку массива чисел по возрастанию и по убыванию.",
+            },
+            {
+              d: "medium",
+              t: "Используй <code>reduce()</code>, чтобы собрать объект-частотность элементов массива.",
+            },
+            {
+              d: "medium",
+              t: "С помощью <code>map()</code> преобразуй массив строк в массив объектов.",
+            },
+            {
+              d: "medium",
+              t: "Используй <code>flat()</code> и <code>flatMap()</code> на небольших примерах.",
+            },
+            {
+              d: "medium",
+              t: "Напиши цепочку методов массива: фильтрация, преобразование, сортировка.",
+            },
+            {
+              d: "medium",
+              t: "Используй <code>fill()</code>, чтобы создать массив из одинаковых значений.",
+            },
+            {
+              d: "medium",
+              t: "Создай массив через <code>Array.from()</code> из строки и из объекта с <code>length</code>.",
+            },
+            {
+              d: "medium",
+              t: 'Преобразуй массив пар вида <code>[["a",1],["b",2]]</code> в объект и обратно.',
+            },
+            {
+              d: "hard",
+              t: "Реализуй собственный аналог метода <code>map()</code> под названием <code>myMap()</code>.",
+            },
+            {
+              d: "hard",
+              t: "Реализуй собственный аналог метода <code>filter()</code> под названием <code>myFilter()</code>.",
+            },
+            {
+              d: "hard",
+              t: "Реализуй собственный аналог метода <code>reduce()</code> под названием <code>myReduce()</code>.",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию, которая группирует элементы массива по какому-либо критерию через <code>reduce()</code>.",
+            },
+          ],
+        },
+
+        {
+          id: "iterables",
+          title: "Перебираемые объекты",
+          icon: "🔁",
+          color: "#14b8a6",
+          tasks: [
+            { d: "easy", t: "Что такое итерируемый объект в JavaScript?" },
+            {
+              d: "easy",
+              t: "Какие встроенные структуры являются итерируемыми? Приведи минимум 5 примеров.",
+            },
+            {
+              d: "easy",
+              t: "Используй <code>for...of</code> для строки, массива и <code>Set</code>.",
+            },
+            { d: "easy", t: "Что делает метод <code>Symbol.iterator</code>?" },
+            {
+              d: "medium",
+              t: "Создай собственный итерируемый объект с диапазоном чисел от <code>from</code> до <code>to</code>.",
+            },
+            {
+              d: "medium",
+              t: "Используй spread-оператор для разворота итерируемого объекта в массив.",
+            },
+            {
+              d: "medium",
+              t: "Преобразуй строку в массив символов через итерирование.",
+            },
+            {
+              d: "medium",
+              t: "Чем итерируемый объект отличается от array-like объекта?",
+            },
+            {
+              d: "medium",
+              t: "Напиши объект, который поддерживает деструктуризацию массива через свой итератор.",
+            },
+            {
+              d: "hard",
+              t: "Реализуй объект, который бесконечно генерирует возрастающие числа через итератор.",
+            },
+            {
+              d: "hard",
+              t: "Напиши собственный итератор для объекта, который перебирает только его числовые значения.",
+            },
+            {
+              d: "hard",
+              t: "Сделай итерируемый объект, который при переборе пропускает элементы по условию.",
+            },
+          ],
+        },
+
+        {
+          id: "map_set",
+          title: "Map и Set",
+          icon: "🗺️",
+          color: "#8b5cf6",
+          tasks: [
+            {
+              d: "easy",
+              t: "Создай <code>Map</code> с тремя парами ключ-значение.",
+            },
+            {
+              d: "easy",
+              t: "В чём отличие <code>Map</code> от обычного объекта?",
+            },
+            {
+              d: "easy",
+              t: "Добавь, получи, проверь и удали значение в <code>Map</code>.",
+            },
+            {
+              d: "easy",
+              t: "Создай <code>Set</code> и добавь в него несколько значений, включая дубликаты.",
+            },
+            {
+              d: "easy",
+              t: "Покажи, что <code>Set</code> хранит только уникальные значения.",
+            },
+            {
+              d: "easy",
+              t: "Как получить размер <code>Map</code> и <code>Set</code>?",
+            },
+            {
+              d: "medium",
+              t: "Перебери <code>Map</code> через <code>for...of</code> с деструктуризацией.",
+            },
+            {
+              d: "medium",
+              t: "Преобразуй объект в <code>Map</code> через <code>Object.entries()</code>.",
+            },
+            {
+              d: "medium",
+              t: "Преобразуй <code>Map</code> обратно в обычный объект.",
+            },
+            {
+              d: "medium",
+              t: "Используй <code>Set</code>, чтобы убрать дубликаты из массива.",
+            },
+            {
+              d: "medium",
+              t: "Напиши пересечение двух массивов через <code>Set</code>.",
+            },
+            {
+              d: "medium",
+              t: "Напиши разность двух множеств через <code>Set</code>.",
+            },
+            {
+              d: "medium",
+              t: "Сделай словарь частот слов строки через <code>Map</code>.",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>groupBy(arr, keyFn)</code>, которая возвращает <code>Map</code> групп.",
+            },
+            {
+              d: "hard",
+              t: "Реализуй кеш результатов функции через <code>Map</code>.",
+            },
+            {
+              d: "hard",
+              t: "Сделай сравнение сценариев, где лучше использовать объект, а где <code>Map</code>.",
+            },
+          ],
+        },
+
+        {
+          id: "weakmap_weakset",
+          title: "WeakMap и WeakSet",
+          icon: "🫥",
+          color: "#f472b6",
+          tasks: [
+            {
+              d: "easy",
+              t: "Что такое <code>WeakMap</code>? Чем он отличается от обычного <code>Map</code>?",
+            },
+            {
+              d: "easy",
+              t: "Почему ключами <code>WeakMap</code> могут быть только объекты?",
+            },
+            {
+              d: "easy",
+              t: "Что такое <code>WeakSet</code>? Чем он отличается от обычного <code>Set</code>?",
+            },
+            {
+              d: "easy",
+              t: "Почему <code>WeakSet</code> хранит только объекты?",
+            },
+            {
+              d: "medium",
+              t: "Почему у <code>WeakMap</code> и <code>WeakSet</code> нет перебора через <code>for...of</code>?",
+            },
+            {
+              d: "medium",
+              t: "Сделай пример приватного хранилища данных экземпляров через <code>WeakMap</code>.",
+            },
+            {
+              d: "medium",
+              t: "Используй <code>WeakSet</code> для хранения набора уже обработанных объектов.",
+            },
+            {
+              d: "medium",
+              t: "Объясни, как <code>WeakMap</code> помогает избегать утечек памяти.",
+            },
+            {
+              d: "hard",
+              t: "Реализуй кэш метаданных DOM-элементов через <code>WeakMap</code>.",
+            },
+            {
+              d: "hard",
+              t: "Напиши задачу-сравнение: когда выбрать <code>Map</code>, а когда <code>WeakMap</code>.",
+            },
+          ],
+        },
+
+        {
+          id: "object_entries",
+          title: "Object.keys, values, entries",
+          icon: "🗂️",
+          color: "#38bdf8",
+          tasks: [
+            {
+              d: "easy",
+              t: "Используй <code>Object.keys()</code> для получения всех ключей объекта.",
+            },
+            {
+              d: "easy",
+              t: "Используй <code>Object.values()</code> для получения всех значений объекта.",
+            },
+            {
+              d: "easy",
+              t: "Используй <code>Object.entries()</code> для получения всех пар ключ-значение.",
+            },
+            {
+              d: "easy",
+              t: "Перебери объект через <code>Object.entries()</code> и <code>for...of</code>.",
+            },
+            {
+              d: "easy",
+              t: "Сравни результат <code>for...in</code> и <code>Object.keys()</code>.",
+            },
+            {
+              d: "medium",
+              t: 'Преобразуй объект цен в массив строк вида <code>"apple: 100"</code> через <code>Object.entries()</code>.',
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию, которая считает сумму всех числовых значений объекта через <code>Object.values()</code>.",
+            },
+            {
+              d: "medium",
+              t: "Отфильтруй объект по значениям и собери новый объект обратно через <code>Object.fromEntries()</code>.",
+            },
+            {
+              d: "medium",
+              t: "Отсортируй объект по ключам, используя <code>Object.entries()</code> и <code>Object.fromEntries()</code>.",
+            },
+            {
+              d: "hard",
+              t: "Сделай функцию <code>invert(obj)</code>, которая меняет местами ключи и значения.",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>mapObject(obj, fn)</code>, которая изменяет значения объекта через пары из <code>Object.entries()</code>.",
+            },
+            {
+              d: "hard",
+              t: "Реализуй функцию глубокой фильтрации объекта, используя рекурсию и <code>Object.entries()</code>.",
+            },
+          ],
+        },
+
+        {
+          id: "destructuring",
+          title: "Деструктурирующее присваивание",
+          icon: "🧠",
+          color: "#f59e0b",
+          tasks: [
+            {
+              d: "easy",
+              t: "Сделай деструктуризацию массива <code>[1,2,3]</code> в переменные <code>a</code>, <code>b</code>, <code>c</code>.",
+            },
+            {
+              d: "easy",
+              t: 'Сделай деструктуризацию объекта <code>{name:"Ann", age:20}</code>.',
+            },
+            {
+              d: "easy",
+              t: "Как переименовать переменную при деструктуризации объекта?",
+            },
+            {
+              d: "easy",
+              t: "Как задать значения по умолчанию в деструктуризации массива и объекта?",
+            },
+            {
+              d: "easy",
+              t: "Как пропустить ненужные элементы массива при деструктуризации?",
+            },
+            {
+              d: "easy",
+              t: "Как поменять местами две переменные через деструктуризацию?",
+            },
+            {
+              d: "medium",
+              t: "Используй rest-элемент в деструктуризации массива.",
+            },
+            {
+              d: "medium",
+              t: "Используй rest-свойство в деструктуризации объекта.",
+            },
+            {
+              d: "medium",
+              t: "Сделай вложенную деструктуризацию объекта с адресом пользователя.",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию, принимающую объект и сразу деструктурирующую параметры в сигнатуре.",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию, принимающую массив координат и сразу деструктурирующую их в параметрах.",
+            },
+            {
+              d: "medium",
+              t: "Преобразуй массив пар из <code>Object.entries()</code> в переменные через деструктуризацию в цикле.",
+            },
+            {
+              d: "hard",
+              t: "Сделай сложную деструктуризацию объекта с вложенными массивами и дефолтными значениями.",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию <code>normalizeUser()</code>, которая принимает объект с пропущенными полями и через деструктуризацию собирает нормализованную структуру.",
+            },
+            {
+              d: "hard",
+              t: "Используй деструктуризацию с итерируемым объектом, который не является массивом.",
+            },
+            {
+              d: "hard",
+              t: "Напиши набор упражнений, где деструктуризация заменяет длинные цепочки обращения к полям.",
+            },
+          ],
+        },
+
+        {
+          id: "date_time",
+          title: "Дата и время",
+          icon: "⏰",
+          color: "#22c55e",
+          tasks: [
+            {
+              d: "easy",
+              t: "Создай объект <code>Date</code> с текущей датой и временем.",
+            },
+            {
+              d: "easy",
+              t: "Создай дату по строке и по набору числовых аргументов.",
+            },
+            {
+              d: "easy",
+              t: "Получить год, месяц, день, часы, минуты и секунды из даты.",
+            },
+            {
+              d: "easy",
+              t: "Чем <code>getDay()</code> отличается от <code>getDate()</code>?",
+            },
+            {
+              d: "easy",
+              t: "Установи у даты новый год, месяц и день через сеттеры.",
+            },
+            {
+              d: "easy",
+              t: "Что такое timestamp? Получи его через <code>Date.now()</code>.",
+            },
+            {
+              d: "easy",
+              t: "Преобразуй дату в строку через <code>toString()</code>, <code>toDateString()</code>, <code>toTimeString()</code>.",
+            },
+            { d: "medium", t: "Посчитай разницу в днях между двумя датами." },
+            {
+              d: "medium",
+              t: "Напиши функцию <code>formatDate(date)</code> в формате <code>DD.MM.YYYY</code>.",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию, которая показывает сколько минут прошло с заданного момента.",
+            },
+            {
+              d: "medium",
+              t: 'Создай дату "через 7 дней" от текущего момента.',
+            },
+            {
+              d: "medium",
+              t: "Что такое UTC-методы у даты? Сравни их с локальными методами.",
+            },
+            {
+              d: "medium",
+              t: "Используй <code>toISOString()</code> и объясни формат результата.",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию проверки: является ли дата выходным днём.",
+            },
+            {
+              d: "medium",
+              t: "Напиши функцию, которая возвращает номер недели месяца для заданной даты.",
+            },
+            {
+              d: "hard",
+              t: "Сделай таймер обратного отсчёта до определённой даты.",
+            },
+            {
+              d: "hard",
+              t: "Напиши функцию, которая корректно добавляет месяцы к дате с учётом переполнения.",
+            },
+            {
+              d: "hard",
+              t: "Сравни способы форматирования даты: вручную, через <code>Intl.DateTimeFormat</code> и через ISO-строку.",
+            },
+            {
+              d: "hard",
+              t: 'Реализуй функцию парсинга строки вида <code>"15.03.2026 20:30"</code> в объект <code>Date</code>.',
+            },
+            {
+              d: "hard",
+              t: "Сделай объект-планировщик событий, который хранит массив дат и умеет находить ближайшее событие.",
+            },
+          ],
+        },
+
+        {
+          id: "json",
+          title: "Формат JSON, метод toJSON",
+          icon: "🧾",
+          color: "#ef4444",
+          tasks: [
+            {
+              d: "easy",
+              t: "Что такое JSON? Чем он отличается от обычного объекта JavaScript?",
+            },
+            {
+              d: "easy",
+              t: "Преобразуй объект в JSON-строку через <code>JSON.stringify()</code>.",
+            },
+            {
+              d: "easy",
+              t: "Преобразуй JSON-строку обратно в объект через <code>JSON.parse()</code>.",
+            },
+            {
+              d: "easy",
+              t: "Какие типы данных корректно сериализуются в JSON, а какие нет?",
+            },
+            {
+              d: "easy",
+              t: "Что происходит с функциями, <code>undefined</code> и <code>Symbol</code> при <code>JSON.stringify()</code>?",
+            },
+            {
+              d: "easy",
+              t: "Что произойдёт с объектом <code>Date</code> при сериализации в JSON?",
+            },
+            {
+              d: "medium",
+              t: "Используй второй аргумент <code>JSON.stringify()</code> — массив разрешённых ключей.",
+            },
+            {
+              d: "medium",
+              t: "Используй второй аргумент <code>JSON.stringify()</code> как функцию-replacer.",
+            },
+            {
+              d: "medium",
+              t: "Используй третий аргумент <code>JSON.stringify()</code> для красивого форматирования.",
+            },
+            {
+              d: "medium",
+              t: "Используй второй аргумент <code>JSON.parse()</code> как функцию-reviver.",
+            },
+            {
+              d: "medium",
+              t: "Напиши пример, где через <code>reviver</code> строка даты превращается обратно в объект <code>Date</code>.",
+            },
+            {
+              d: "medium",
+              t: "Что делает метод <code>toJSON()</code>? Напиши объект со своим <code>toJSON()</code>.",
+            },
+            {
+              d: "medium",
+              t: "Покажи, как <code>toJSON()</code> меняет результат сериализации объекта.",
+            },
+            {
+              d: "medium",
+              t: "Сериализуй <code>Map</code> вручную в JSON и потом восстанови его.",
+            },
+            {
+              d: "medium",
+              t: "Сериализуй <code>Set</code> вручную в JSON и потом восстанови его.",
+            },
+            {
+              d: "hard",
+              t: "Объясни, почему циклические ссылки ломают <code>JSON.stringify()</code>.",
+            },
+            {
+              d: "hard",
+              t: "Реализуй безопасную сериализацию объекта с циклическими ссылками.",
+            },
+            {
+              d: "hard",
+              t: "Сделай функцию <code>saveState(obj)</code> и <code>loadState(json)</code> для сохранения и восстановления состояния приложения.",
+            },
+            {
+              d: "hard",
+              t: "Напиши объект с несколькими уровнями вложенности и кастомными <code>toJSON()</code> у внутренних объектов.",
+            },
+          ],
+        },
+      ];
+
+      const STORAGE_KEY = "jsTasks6_done";
+      let done = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      let currentFilter = "all";
+      let searchQuery = "";
+      const TOTAL = 200;
+
+      function renderAll() {
+        const root = document.getElementById("tasksRoot");
+        root.innerHTML = "";
+
+        let easy = 0,
+          medium = 0,
+          hard = 0;
+        TOPICS.forEach((topic) =>
+          topic.tasks.forEach((task) => {
+            if (task.d === "easy") easy++;
+            else if (task.d === "medium") medium++;
+            else hard++;
+          }),
+        );
+
+        document.getElementById("easyCount").textContent = easy;
+        document.getElementById("medCount").textContent = medium;
+        document.getElementById("hardCount").textContent = hard;
+
+        let taskNumber = 0;
+
+        TOPICS.forEach((topic) => {
+          const section = document.createElement("section");
+          section.className = "topic-section";
+
+          const header = document.createElement("div");
+          header.className = "topic-header";
+          header.innerHTML = `
+      <div class="topic-icon" style="background:${topic.color}22;color:${topic.color}">${topic.icon}</div>
+      <div class="topic-title">${topic.title}</div>
+      <div class="topic-count">${topic.tasks.length} заданий</div>
+    `;
+          section.appendChild(header);
+
+          const grid = document.createElement("div");
+          grid.className = "task-grid";
+
+          topic.tasks.forEach((task, index) => {
+            taskNumber++;
+            const id = `${topic.id}_${index}`;
+            const isDone = !!done[id];
+
+            const labels = {
+              easy: "Лёгкое",
+              medium: "Среднее",
+              hard: "Сложное",
+            };
+            const diffClasses = {
+              easy: "diff-easy",
+              medium: "diff-medium",
+              hard: "diff-hard",
+            };
+
+            const card = document.createElement("div");
+            card.className = `task-card${isDone ? " done" : ""}`;
+            card.style.setProperty("--card-color", topic.color);
+            card.dataset.id = id;
+            card.dataset.diff = task.d;
+            card.dataset.done = isDone ? "1" : "0";
+            card.dataset.text = task.t.replace(/<[^>]+>/g, "").toLowerCase();
+
+            card.innerHTML = `
+        <div class="task-top">
+          <span class="task-num">#${String(taskNumber).padStart(3, "0")}</span>
+          <span class="difficulty ${diffClasses[task.d]}">${labels[task.d]}</span>
+        </div>
+        <div class="task-text">${task.t}</div>
+        <div class="task-actions">
+          <button class="btn-done" onclick="toggleDone('${id}', this)">
+            ${isDone ? "✅ Сделано" : "○ Выполнено"}
+          </button>
+        </div>
+      `;
+
+            grid.appendChild(card);
+          });
+
+          section.appendChild(grid);
+          root.appendChild(section);
+        });
+
+        updateProgress();
+        applyFilter();
+      }
+
+      function toggleDone(id, btn) {
+        done[id] = !done[id];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(done));
+
+        const card = btn.closest(".task-card");
+        const isDone = !!done[id];
+
+        card.classList.toggle("done", isDone);
+        card.dataset.done = isDone ? "1" : "0";
+        btn.textContent = isDone ? "✅ Сделано" : "○ Выполнено";
+
+        updateProgress();
+        applyFilter();
+      }
+
+      function updateProgress() {
+        const completed = Object.values(done).filter(Boolean).length;
+        const percent = ((completed / TOTAL) * 100).toFixed(1);
+        document.getElementById("progressBar").style.width = percent + "%";
+        document.getElementById("progressText").textContent =
+          `${completed} / ${TOTAL}`;
+        document.getElementById("floatCounter").textContent =
+          `✅ ${completed} / ${TOTAL}`;
+      }
+
+      function setFilter(filter, btn) {
+        currentFilter = filter;
+        document
+          .querySelectorAll(".filter-btn")
+          .forEach((el) => el.classList.remove("active"));
+        btn.classList.add("active");
+        applyFilter();
+      }
+
+      function filterTasks() {
+        searchQuery = document
+          .getElementById("searchInput")
+          .value.toLowerCase()
+          .trim();
+        applyFilter();
+      }
+
+      function applyFilter() {
+        document.querySelectorAll(".task-card").forEach((card) => {
+          const diff = card.dataset.diff;
+          const isDone = card.dataset.done === "1";
+          const text = card.dataset.text;
+
+          let visible = true;
+
+          if (currentFilter === "easy") visible = diff === "easy";
+          else if (currentFilter === "medium") visible = diff === "medium";
+          else if (currentFilter === "hard") visible = diff === "hard";
+          else if (currentFilter === "done") visible = isDone;
+          else if (currentFilter === "undone") visible = !isDone;
+
+          if (searchQuery && !text.includes(searchQuery)) visible = false;
+          card.classList.toggle("hidden", !visible);
+        });
+
+        document.querySelectorAll(".topic-section").forEach((section) => {
+          const hasVisibleCards = [
+            ...section.querySelectorAll(".task-card"),
+          ].some((card) => !card.classList.contains("hidden"));
+          section.classList.toggle("hidden", !hasVisibleCards);
+        });
+      }
+
+      function resetAll() {
+        if (confirm("Сбросить весь прогресс?")) {
+          done = {};
+          localStorage.removeItem(STORAGE_KEY);
+          renderAll();
+        }
+      }
+
+      renderAll();
+    </script>
+  </body>
+</html>
